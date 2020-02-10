@@ -1,0 +1,1 @@
+run such as 'python twitterAPI.py congress.txt'

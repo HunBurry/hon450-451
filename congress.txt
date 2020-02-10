@@ -1,0 +1,522 @@
+SteveDaines
+SenatorTester
+SenatorBurr
+SenThomTillis
+SenKevinCramer, R, North Dakota
+SenJohnHoeven, R, North Dakota
+SenatorFischer, R, Nebraska
+SenSasse, R, Nebraska
+SenatorHassan, D, New Hampshire
+SenatorShaheen, D, New Hampshire
+SenBooker, D, New Jersey
+SenatorMenendez, D, New Jersey
+MartinHeinrich, D, New Mexico
+SenatorTomUdall, D, New Mexico
+SenCortezMasto, D, Nevada
+SenJackyRosen, D, Nevada
+gillibrandny, D, New York
+SenSchumer, D, New York
+SenSherrodBrown, D, Ohio
+senrobportman, R, Ohio
+JimInhofe, R, Oklahoma
+SenatorLankford, R, Oklahoma
+SenJeffMerkley, D, Oregon
+RonWyden, D, Oregon
+SenBobCasey, D, Pennsylvania
+SenToomey, R, Pennsylvania
+SenJackReed, D, Rhode Island
+SenWhitehouse, D, Rhode Island
+LindseyGrahamSC, R, South Carolina
+SenatorTimScott, R, South Carolina
+SenatorRounds, R, South Dakota
+SenJohnThune, R, South Dakota
+SenAlexander, R, Tennessee
+MarshaBlackburn, R, Tennessee
+JohnCornyn, R, Texas
+SenTedCruz, R, Texas
+SenMikeLee, R, Utah
+SenatorRomney, R, Utah
+MarkWarner, D, Virginia
+SenatorLeahy, D, Vermont
+SenSanders, D, Vermont
+SenatorCantwell, D, Washington
+PattyMurray, D, Washington
+SenatorBaldwin, D, Wisconsin
+SenRonJohnson, R, Wisconsin
+SenCapito, R, West Virginia
+Sen_JoeManchin, D, West Virginia
+SenJohnBarrasso, R, Wyoming
+SenatorEnzi, R, Wyoming
+lisamurkowski, R, Alaska
+SenDanSullivan, R, Alaska
+SenDougJones, D, Alabama
+SenShelby, R, Alabama
+JohnBoozman, R, Arkansas
+SenTomCotton, R, Arkansas
+SenMcSallyAZ, R, Arizona
+SenatorSinema, D, Arizona
+SenFeinstein, D, California
+SenKamalaHarris, D, California
+SenatorBennet, D, Colorado
+SenCoryGardner, R, Colorado
+SenBlumenthal, D, Connecticut
+SenMurphyOffice, D, Connecticut
+SenatorCarper, D, Delaware
+ChrisCoons, D, Deleware
+SenRubioPress, R, Florida
+SenRickScott, R, Florida
+SenatorIsakson, R, Georgia
+sendavidperdue, R, Georgia
+maziehirono, D, Hawaii
+SenBrianSchatz, D, Hawaii
+SenJoniErnst, R, Iowa
+ChuckGrassley, R, Iowa
+MikeCrapo, R, Idaho
+SenatorRisch, R, Idaho
+SenDuckworth, D, Illinois
+SenatorDurbin, D, Illinois
+SenatorBraun, R, Indiana
+SenToddYoung, R, Indiana
+JerryMoran, R, Kansas
+SenPatRoberts, R, Kansas
+SenateMajLdr, R, Kentucky
+RandPaul, R, Kentucky
+SenBillCassidy, R, Louisiana
+SenJohnKennedy, R, Louisiana
+SenMarkey, D, Massachusetts
+SenWarren, D, Massachusetts
+SenatorCardin, D, Maryland
+ChrisVanHollen, D, Maryland
+SenatorCollins, R, Maine
+SenAngusKing, D, Maine
+SenGaryPeters, D, Michigan
+SenStabenow, D, Michigan
+SenAmyKlobuchar, D, Minnesota
+SenTinaSmith, D, Minnesota
+RoyBlunt, R, Missouri
+SenHawleyPress, R, Missouri
+SenHydeSmith, R, Mississippi
+SenatorWicker, R, Mississippi
+repdonyoung, R, Alaska
+RepByrne, R, Alabama
+RepMarthaRoby, R, Alabama
+RepMikeRogersAL, R, Alabama
+Robert_Aderholt, R, Alabama
+RepMoBrooks, R, Alabama
+USRepGaryPalmer, R, Alabama
+RepTerriSewell, D, Alabama
+RepRickCrawford, R, Arkansas
+RepFrenchHill, R, Arkansas
+rep_stevewomack, R, Arkansas
+RepWesterman, R, Arkansas
+RepOHalleran, D, Arizona
+RepKirkpatrick, D, Arizona
+RepRaulGrijalva, D, Arizona
+RepGosar, R, Arizona
+RepAndyBiggsAZ, R, Arizona
+RepDavid, R, Arizona
+RepRubenGallego, D, Arizona
+RepDLesko, R, Arizona
+RepGregStanton, D, Arizona
+RepLaMalfa, R, California
+RepHuffman, D, California
+RepGaramendi, D, California
+RepMcClintock, R, California
+RepThompson, D, California
+DorisMatsui, D, California
+RepBera, D, California
+RepPaulCook, R, California
+RepMcNerney, D, California
+RepJoshHarder, D, California
+RepDeSaulnier, D, California
+SpeakerPelosi, D, California
+RepBarbaraLee, D, California
+RepSpeier, D, California
+RepSwalwell, D, California
+RepJimCosta, D, California
+RepRoKhanna, D, California
+RepAnnaEshoo, D, California
+RepZoeLofgren, D, California
+RepJimmyPanetta, D, California
+RepTjCox, D, California
+RepDevinNunes, R, California
+GOPLeader, R, California
+RepCarbajal, D, California
+RepKatieHill, D, California
+RepBrownley, D, California
+RepJudyChu, D, California
+RepAdamSchiff, D, California
+RepCardenas, D, California
+BradSherman, D, California
+RepPeteAguilar, D, California
+gracenapolitano, D, California
+RepTedLieu, D, California
+RepJimmyGomez, D, California
+NormaJTorres, D, California
+CongressmanRuiz, D, California
+RepKarenBass, D, California
+RepLindaSanchez, D, California
+RepGilCisneros, D, California
+RepRoybalAllard, D, California
+RepMarkTakano, D, California
+KenCalvert, R, California
+RepMaxineWaters, D, California
+RepBarragan, D, California
+RepKatiePorter, D, California
+RepLouCorrea, D, California
+RepLowenthal,  D, California
+RepHarley, D, California
+RepMikeLevin, D, California
+Rep_Hunter, R, California
+RepJuanVargas, D, California
+RepScottPeters, D, California
+RepSusanDavis, D, California
+RepDianaDeGette, D, Colorado
+RepJoeNeguse, D, Colorado
+RepTipton, R, Colorado
+RepKenBuck, R, Colorado
+RepDLamborn, R, Colorado
+RepJasonCrow, D, Colorado
+RepPerlmutter, D, Colorado
+RepJohnLarson, D, Connecticut
+RepJoeCourtney, D, Connecticut
+rosadelauro, D, Connecticut
+jahimes, D, Connecticut
+RepJahanaHayes, D, Connecticut
+RepLBR, D, Deleware
+EleanorNorton, D, District of Columbia
+RepMattGaetz, R, Florida
+DrNealDunnFL2, R, Flordia
+RepTedYoho, R, Florida
+RepRutherfordFL, R, Florida
+RepAlLawsonJr, D, Florida
+RepMichaelWaltz, R, Florida
+RepStephMurphy, D, Florida
+congbillposey, R, Florida
+RepDarrenSoto, D, Florida
+RepValDemings, D, Florida
+RepWebster, R, Florida
+RepGusBilirakis, R, Florida
+RepCharlieCrist, D, Florida
+USRepKCastor, D, Florida
+VernBuchanan, R, Florida
+RepGregSteube, R, Florida
+RepBrianMast, R, Florida
+RepRooney, R, Florida
+RepHastingsFL, D, Florida
+RepLoisFrankel, D, Florida
+RepTedDeutch, D, Florida
+RepDWStweets, D, Florida
+RepWilson, D, Florida
+MarioDB, R, Florida
+RepDMP, D, Florida
+RepShalala, D, Florida
+RepBuddyCarter, R, Georgia 
+SanfordBishop, D, Georgia
+RepDrewFerguson, R, Georgia
+RepHankJohnson
+repjohnlewis
+RepLucyMcBath
+RepRobWoodall
+AustinScottGA08
+RepDougCollins
+CongressmanHice
+RepLoudermilk
+RepRickAllen
+repdavidscott
+RepTomGraves
+RepEdCase
+TulsiPress
+RepFinkenauer
+daveloebsack
+RepCindyAxne
+RepRussFulcher
+CongMikeSimpson
+RepBobbyRush
+RepRobinKelly
+RepLipinski
+RepChuyGarcia
+RepMikeQuigley
+RepCasten
+RepDannyDavis
+CongressmanRaja
+janschakowsky
+RepSchneider
+RepBillFoster
+RepBost
+RodneyDavis
+RepUnderwood
+RepShimkus
+RepKinzinger
+RepCheri
+RepLaHood
+RepVisclosky
+RepWalorski
+RepJimBanks
+RepJimBaird
+SusanWBrooks
+RepGregPence
+RepAndreCarson
+RepLarryBucshon
+RepTrey
+RepDavids
+RepRonEstes
+RepGuthrie
+RepJohnYarmuth
+RepThomasMassie
+RepHalRogers
+RepAndyBarr
+SteveScalise
+RepRichmond
+RepClayHiggins
+RepMikeJohnson
+RepAbraham
+RepGarretGraves
+chelliepingree
+RepGolden
+RepAndyHarrisMD
+Call_Me_Dutch
+RepSarbanes
+RepAnthonyBrown
+LeaderHoyer
+RepDavidTrone
+RepCummings
+RepRaskin
+RepRichardNeal
+RepMcGovern
+RepLoriTrahan
+RepJoeKennedy
+RepKClark
+teammoulton
+RepPressley
+RepStephenLynch
+USRepKeating
+RepJackBergman
+RepHuizenga
+justinamash
+RepMoolenaar
+RepDanKildee
+RepFredUpton
+RepWalberg
+RepSlotkin
+RepAndyLevin
+RepPaulMitchell
+RepHaleyStevens
+RepDebDingell
+RepRashida
+RepLawrence
+RepHagedorn
+RepAngieCraig
+RepDeanPhillips
+BettyMcCollum04
+Ilhan
+RepTomEmmer
+RepPeteStauber
+LacyClayMO1
+RepAnnWagner
+RepBlaine
+RepHartzler
+repcleaver
+RepSamGraves
+USRepLong
+RepJasonSmith
+RepTrentKelly
+BennieGThompson
+RepMichaelGuest
+CongPalazzo
+GKButterfield
+RepHolding
+RepWalterJones
+RepDavidEPrice
+virginiafoxx
+RepMarkWalker
+RepDavidRouzer
+RepRichHudson
+PatrickMcHenry
+RepMarkMeadows
+RepAdams
+RepTedBudd
+RepArmstrongND
+JeffFortenberry
+RepDonBacon
+RepAdrianSmith
+RepChrisPappas
+RepAnnieKuster
+DonaldNorcross
+CongressmanJVD
+RepAndyKimNJ
+RepChrisSmith
+RepJoshG
+FrankPallone
+RepMalinowski
+RepSires
+BillPascrell
+RepDonaldPayne
+RepSherrill
+RepBonnie
+RepDebHaaland
+RepTorresSmall
+repbenraylujan
+repdinatitus
+MarkAmodeiNV2
+RepSusieLee
+RepHorsford
+RepLeeZeldin
+RepPeteKing
+RepTomSuozzi
+RepKathleenRice
+RepGregoryMeeks
+RepGraceMeng
+NydiaVelazquez
+RepJeffries
+RepYvetteClarke
+RepJerryNadler
+RepMaxRose
+RepMaloney
+RepEspaillat
+RepAOC
+RepJoseSerrano
+RepEliotEngel
+NitaLowey
+RepSeanMaloney
+repdelgado
+RepPaulTonko
+RepStefanik
+RepBrindisi
+RepTomReed
+RepJohnKatko
+RepJoeMorelle
+RepBrianHiggins
+RepSteveChabot
+RepBradWenstrup
+RepBeatty
+Jim_Jordan
+boblatta
+RepBillJohnson
+RepBobGibbs
+WarrenDavidson
+RepMarcyKaptur
+RepMikeTurner
+RepMarciaFudge
+RepBalderson
+RepTimRyan
+RepDaveJoyce
+RepSteveStivers
+RepAGonzalez
+repkevinhern
+RepMullin
+RepFrankLucas
+TomColeOK04
+RepKendraHorn
+RepBonamici
+repgregwalden
+repblumenauer
+RepPeterDeFazio
+RepSchrader
+RepBrianFitz
+CongBoyle
+RepDwightEvans
+RepDean
+RepMGS
+RepHoulahan
+RepSusanWild
+RepCartwright
+RepMeuser
+RepScottPerry
+RepSmucker
+RepJohnJoyce
+GReschenthaler
+CongressmanGT
+MikeKellyPA
+RepConorLamb
+USRepMikeDoyle
+davidcicilline
+JimLangevin
+RepCunningham
+RepJoeWilson
+RepJeffDuncan
+reptimmons
+RepRalphNorman
+WhipClyburn
+RepTomRice
+RepDustyJohnson
+DrPhilRoe
+RepTimBurchett
+RepChuck
+DesJarlaisTN04
+repjimcooper
+RepJohnRose
+RepMarkGreen
+RepDavidKustoff
+RepCohen
+replouiegohmert
+RepDanCrenshaw
+RepVanTaylor
+RepRatcliffe
+RepRonWright
+RepFletcher
+RepKevinBrady
+RepAlGreen
+RepMcCaul
+ConawayTX11
+RepKayGranger
+MacTXPress
+TXRandy14
+RepGonzalez
+RepEscobar
+RepBillFlores
+JacksonLeeTX18
+RepArrington
+JoaquinCastrotx
+RepChipRoy
+RepPeteOlson
+HurdOnTheHill
+RepKenMarchant
+RepRWilliams
+michaelcburgess
+RepCloudTX
+RepCuellar
+RepSylviaGarcia
+RepEBJ
+JudgeCarter
+RepColinAllred
+RepVeasey
+RepFilemonVela
+RepLloydDoggett
+RepBrianBabin
+RepChrisStewart
+RepJohnCurtis
+RepBenMcAdams
+RobWittman
+RepElaineLuria
+BobbyScott
+RepMcEachin
+RepRiggleman
+RepBenCline
+RepSpanberger
+RepDonBeyer
+RepMGriffith
+RepWexton
+GerryConnolly
+PeterWelch
+RepDelBene
+RepRickLarsen
+HerreraBeutler
+RepNewhouse
+cathymcmorris
+RepDerekKilmer
+RepJayapal
+RepKimSchrier
+RepAdamSmith
+RepDennyHeck
+RepBryanSteil
+repmarkpocan
+RepRonKind
+RepGwenMoore
+JimPressOffice
+RepGrothman
+RepGallagher
+RepMcKinley
+RepAlexMooney
+RepCarolMiller
+RepLizCheney
