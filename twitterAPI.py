@@ -11,6 +11,28 @@ import sys;
 from datetime import datetime;
 import subprocess;
 
+parties = {}
+states = {}
+
+def naive_bayes(dictionary, term, state, totalInState, totalInCountry):
+   #count of term in state/ total words in state * (# of people from state / total ppl)
+   # all that divided by number of term / total words 
+   if term in dictionary[state].keys():
+      numOfTermInCountry = 0;
+      numOfWordsInCountry = 0;
+      numOfTermOccurences = dictionary[state][term];
+      numOfTotalStateOccurences = 0;
+      for key in dictionary[state].keys():
+         numOfTotalStateOccurences = numOfTotalStateOccurences + dictionary[state][key];
+      for key in dictionary.keys():
+         for subKey in dictionary[key].keys():
+            if subKey == term:
+               numOfTermInCountry = numOfTermInCountry + dictionary[key][subKey];
+            else:
+               numOfWordsInCountry = numOfWordsInCountry + dictionary[key][subKey];
+      return (((numOfTermOccurences / numOfTotalStateOccurences)  * (totalInState / totalInCountry)) / (numOfTermInCountry / numOfWordsInCountry));
+   else:
+      return 0;
 
 def clean_tweet(tweet): 
    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())  
@@ -89,7 +111,8 @@ def createFrame(api, tweetsToPull, users):
 
 def main():
    time.sleep(5);
-
+   if sys.argv == None:
+      sys.argv[1] = 'congress.txt'
    textFile = sys.argv[1];
    auth = tweepy.OAuthHandler("ZqarwsmGvqGU8IR7pmRUeG23j", "RfYaQf6l4hHIkynjvV5Yi17TzYjy2xBv9A0gwEjbFKfgxSrO3O");
    auth.set_access_token("4819588312-rXEoklKXE27hSQLnhERd8UBpJLp7FmVVk2CJles", "2imqeKDTNq6T1GeGCJUtL1yvpr6EJlOAYykAJxjhAIPvZ");
@@ -130,23 +153,27 @@ def main():
       if row['party'] in parties.keys():
          pass;
       else:
-         parties[row['party']] = [];
+         parties[row['party']] = {};
       if row['state'] in states.keys():
          pass;
       else:
-         states[row['state']] = [];
+         states[row['state']] = {};
+   
       for item in row['nouns']:
-         if item not in parties[row['party']]:
-            parties[row['party']].append(item);
-         if item not in states[row['state']]
+         if item not in parties[row['party']].keys():
+            parties[row['party']] = 1;
+         else:
+            parties[row['party']][item] = parties[row['party']][item] + 1;
+         if item not in states[row['state']]:
             #ensure there are no duplicates
-            states[row['state']].append(item);
+            states[row['state']][item] = 1;
+         else:
+            states[row['state']][item] = states[row['state']][item] + 1;
             #shoould i add a counter system
       #overall list for nouns, different than parties/state
       #reget the stuff oi lost from word
-
-   print(parties);
    print(states);
+   print(parties);
          
 
 if __name__ == '__main__':
