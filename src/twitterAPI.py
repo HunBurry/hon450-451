@@ -13,6 +13,49 @@ import subprocess;
 
 parties = {}
 states = {}
+stateBreakdown = {}
+
+def naive_bayes_final(stateDict, word, state):
+   '''
+   p(state) -> numInState/numInCountry
+   p(word|state) -> numOfTermInState/numOfTermTotal
+   p(word) -> numOfTerm/numInCountry
+   '''
+
+   wordsInState = 0;
+   for key in stateDict[state].keys():
+      wordsInState = wordsInState + stateDict[state][key];
+
+   if word not in stateDict[state].keys():
+      return 0;
+   numInState = stateDict[state][word];
+   numOfTermTotal = 0;
+   numTotal = 0; 
+   for key in stateDict.keys():
+      if word in stateDict[key].keys():
+         numOfTermTotal = numOfTermTotal + stateDict[key][word];
+      for subKey in stateDict[key].keys():
+         numTotal = numTotal + stateDict[key][subKey];
+
+   pWordState = numInState / wordsInState;
+   pWord = numOfTermTotal / numTotal;
+   pState = wordsInState / numTotal;
+
+   print("wordsInState: " + str(wordsInState));
+   print(pState);
+   print("___________________")
+
+   print("numInState: " + str(numInState));
+   print("numOfTermTotal: " + str(numOfTermTotal));
+   print(pWordState);
+   print("___________________");
+
+   print("numTotal: " + str(numTotal));
+   print(pWord);
+
+   finalProb = (pState * pWordState) / pWord;
+
+   return finalProb;
 
 def naive_bayes(dictionary, term, state, totalInState, totalInCountry):
    #count of term in state/ total words in state * (# of people from state / total ppl)
@@ -28,11 +71,11 @@ def naive_bayes(dictionary, term, state, totalInState, totalInCountry):
          for subKey in dictionary[key].keys():
             if subKey == term:
                numOfTermInCountry = numOfTermInCountry + dictionary[key][subKey];
-            else:
-               numOfWordsInCountry = numOfWordsInCountry + dictionary[key][subKey];
+            numOfWordsInCountry = numOfWordsInCountry + dictionary[key][subKey];
       return (((numOfTermOccurences / numOfTotalStateOccurences)  * (totalInState / totalInCountry)) / (numOfTermInCountry / numOfWordsInCountry));
    else:
       return 0;
+   #if numOfTermInCountry = 0; return 1;
 
 def clean_tweet(tweet): 
    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())  
@@ -90,30 +133,39 @@ def createFrame(api, tweetsToPull, users):
       userName = params[0];
       party = params[1];
       state = params[2];
+      if state not in stateBreakdown.keys():
+         stateBreakdown[state] = {party: 1};
+      else:
+         stateBreakdown[state][party] = stateBreakdown[state][party] + 1;
       cursor = tweepy.Cursor(api.user_timeline, screen_name=userName, include_rts=True, tweet_mode='extended').items(tweetsToPull);
       for post in limit_handled(cursor, finishedUsers, users, diction):
          cleanedTweet = clean_tweet(post.full_text);
          if cleanedTweet[0:2] == 'RT':
             cleanedTweet = cleanedTweet[2:];
-         #cats = getCategories(cleanedTweet);
+         #if location is not incuded in tweeet, use the NB to find their suspeected state
          blob = TextBlob(cleanedTweet);
          polarity = blob.sentiment.polarity;
          nouns = blob.noun_phrases;
          diction.append([userName, cleanedTweet, polarity, nouns, party, state]);
-         #might introduce party has 0 or 1 binary
-         #something in here about a .split(", ") -> userName, party (R/D), and state
       finishedUsers.append(user);
 
-   print("Iteration completed...")
-
+   print("Iteration completed...");
+   
    tweets = pd.DataFrame(diction, columns=['user', 'tweetText', 'simplePolarity', 'nouns', 'party', 'state']);
+
+   ##new data frame -> one for state, one for party
+   ##also include number used, highestSent, lowestSent, averageSent;
+   ##https://scikit-learn.org/stable/modules/naive_bayes.html
    return tweets;
 
 def main():
+   global parties, states;
+   
    time.sleep(5);
-   if sys.argv == None:
-      sys.argv[1] = 'congress.txt'
-   textFile = sys.argv[1];
+   if len(sys.argv) <= 1:
+      textFile = 'congress.txt'
+   else:
+      textFile = sys.argv[1];
    auth = tweepy.OAuthHandler("ZqarwsmGvqGU8IR7pmRUeG23j", "RfYaQf6l4hHIkynjvV5Yi17TzYjy2xBv9A0gwEjbFKfgxSrO3O");
    auth.set_access_token("4819588312-rXEoklKXE27hSQLnhERd8UBpJLp7FmVVk2CJles", "2imqeKDTNq6T1GeGCJUtL1yvpr6EJlOAYykAJxjhAIPvZ");
 
@@ -132,11 +184,26 @@ def main():
 
    print("Data populated.")
 
-   if 'realDonaldTrump' not in users:
-      users.append('realDonaldTrump'); # List of all users to pull training data for.
+   #if 'realDonaldTrump' not in users:
+   #   users.append('realDonaldTrump'); # List of all users to pull training data for.
 
    data = createFrame(api, tweetsToPull, users);
    print(data);
+   
+   '''
+   numTotal = 0;
+   for key in stateBreakdown.keys():
+      if "D" not in stateBreakdown[key].keys():
+         stateBreakdown[key]["D"] = 0;
+      else:
+         numTotal = numTotal + stateBreakdown[key]['D'];
+      if "R" not in stateBreakdown[key].keys():
+         stateBreakdown[key]['R'] = 0;
+      else:
+         numTotal = numTotal + stateBreakdown[key]['R'];
+
+         '''
+       
    
    now = datetime.now();
    dt_string = now.strftime("%d_%m_%Y_%H-%M");
@@ -146,8 +213,8 @@ def main():
    with open(filename, 'a') as f:
       data.to_csv(f, header=False)
 
-   parties = {};
-   states = {};
+   highestSent = {};
+   lowestSent = {};
 
    for index, row in data.iterrows():
       if row['party'] in parties.keys():
@@ -161,17 +228,32 @@ def main():
    
       for item in row['nouns']:
          if item not in parties[row['party']].keys():
-            parties[row['party']] = 1;
+            parties[row['party']][item] = 1;
          else:
             parties[row['party']][item] = parties[row['party']][item] + 1;
          if item not in states[row['state']]:
-            #ensure there are no duplicates
             states[row['state']][item] = 1;
          else:
             states[row['state']][item] = states[row['state']][item] + 1;
-            #shoould i add a counter system
-      #overall list for nouns, different than parties/state
-      #reget the stuff oi lost from word
+
+         #record highest and compare back 
+      
+   listOfStates = ['Alaska', 'Alabama', 'Arkansas', 'Arizona', 'California', 'Colorado', 'Connecticut', 
+   'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Iowa', 'Idaho', 'Illinois', 'Indiana', 'Kansas', 'Kentucky', 
+   'Louisiana', 'Massachusetts', 'Maryland', 'Maine', 'Michigan', 'Minnesota', 'Missouri', 'Mississippi', 'Montana', 
+   'North Carolina', 'North Dakota', 'Nebraska', 'New Hampshire', 'New Jersey', 'New Mexico', 'Nevf3ada', 'New York', 
+   'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 
+   'Texas', 'Utah', 'Virginia', 'Vermont', 'Washington', 'Wisconsin', 'West Virginia', 'Wyoming'];
+
+   highest = 0;
+   highestState = '';
+   for state in listOfStates:
+      curState = states[state];
+      nbr = naive_bayes_final(states, "someWord", curState);
+      #multiply NP by another NP to get multiple words, times pState
+      if nbr > max:
+
+
    print(states);
    print(parties);
          
@@ -181,42 +263,3 @@ if __name__ == '__main__':
 
 #ok do machine learning stuff...
 #use machine learning and some training data to determine whether  or not tweets fall into a certain cateofry... then run aspect-based on those assigned categoeis
-
-'''
-def diff(first, second):
-        second = set(second)
-        return [item for item in first if item not in second]
-
-diff(completed, finished);
-'''
-
-"""
-stuff = api.user_timeline(screen_name = 'realDonaldTrump', count = 5, include_rts = True)
-print(user.screen_name);
-print(user.followers_count);
-for friend in user.friends():
-   print(friend.screen_name);
-
-for item in stuff:
-   print(item.text);
-   
-   #public_tweets = api.home_timeline()
-#for tweet in public_tweets:
-#    print(tweet.text)
-#user = api.get_user('realDonaldTrump');
-
-# above omitted for brevity
-c = tweepy.Cursor(api.search,
-                       q=search,
-                       include_entities=True).items()
-while True:
-    try:
-        tweet = c.next()
-        # Insert into db
-    except tweepy.TweepError:
-        time.sleep(60 * 15)
-        continue
-    except StopIteration:
-        break
-
-"""
