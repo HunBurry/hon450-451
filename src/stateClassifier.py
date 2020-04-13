@@ -3,36 +3,39 @@
 from textblob.classifiers import NaiveBayesClassifier
 
 import csv
+    
 
 myList = [];
 trainingData = [];
+trainingFiles = ['data12_04_2020_22-58.csv', 'data12_02_2020_11-20.csv']
 
-with open("data12_02_2020_11-20.csv", "r") as f:
-    reader = csv.reader(f, delimiter="\t")
-    for i, line in enumerate(reader):
-        if i % 2 == 0:
-            myList.append(line[0])
+for fName in trainingFiles:
+    with open(fName, "r") as f:
+        reader = csv.reader(f, delimiter="\t")
+        for i, line in enumerate(reader):
+            if i % 2 == 0:
+                myList.append(line[0])
 
 for line in myList:
     info = line.split(',');
     tweet = info[2]
-    polar = info[len(info) - 2]
+    polar = info[len(info) - 1]
     c = tuple([tweet, polar]);
     trainingData.append(c);
 
-cl = NaiveBayesClassifier(trainingData)
+print(len(trainingData))
 
-print(cl.classify("The big Oil Deal with OPEC Plus is done. This will save hundreds of thousands of energy jobs in the United States. I would like to thank and congratulate President Putin of Russia and King Salman of Saudi Arabia. I just spoke to them from the Oval Office. Great deal for all!"))
+myData1 = trainingData[0:1000]
+trainingData = trainingData[1000:len(trainingData)]
 
-# From Donald Trump, Should Predict 'R'
+cl = NaiveBayesClassifier(myData1)
 
-print(cl.classify("No Montanan should have to choose between paying medical bills and putting food on the table for their families during a public health crisis. I fought to expand SNAP benefits to ensure no one in our state goes hungry as we combat this crisis."))
-
-# From Democractic Senator Tester, Should Predict 'D' 
-
+for i in range(0, len(trainingData), 50):
+    chunk = trainingData[i:i + 50]
+    print(i)
+    cl.update(chunk)
 
 print(cl.show_informative_features());
-
 
 myList2 = []
 test = []
@@ -46,18 +49,16 @@ with open("data05_02_2020_11-17.csv", "r") as f:
 for line in myList2:
     info = line.split(',');
     tweet = info[2]
-    polar = info[len(info) - 2]
+    polar = info[len(info) - 1]
     c = tuple([tweet, polar]);
     test.append(c);
 
 
-h1 = test[0:round(len(test) * .5)]
-h2 = test[round(len(test) * .5) + 1:len(test) - 1]
+for i in range(0, len(trainingData), 100):
+    chunk = trainingData[i:i + 100]
+    print(cl.accuracy(chunk))
 
-print(cl.accuracy(h1))
-print(cl.accuracy(h2))
-
-## possible ways to increase this -> my custom Naive Bayes, giving it more data, or combining it with ML and more data
+# must be split up to avoid memory errors
 
 '''
                           dotprod(weights, encode(fs,label))

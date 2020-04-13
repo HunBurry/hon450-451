@@ -135,8 +135,8 @@ def createFrame(api, tweetsToPull, users):
       state = params[2];
       if state not in stateBreakdown.keys():
          stateBreakdown[state] = {party: 1};
-      else:
-         stateBreakdown[state][party] = stateBreakdown[state][party] + 1;
+      #else:
+      #   stateBreakdown[state][party] = stateBreakdown[state][party] + 1;
       cursor = tweepy.Cursor(api.user_timeline, screen_name=userName, include_rts=True, tweet_mode='extended').items(tweetsToPull);
       for post in limit_handled(cursor, finishedUsers, users, diction):
          cleanedTweet = clean_tweet(post.full_text);
@@ -245,17 +245,16 @@ def main():
    'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 
    'Texas', 'Utah', 'Virginia', 'Vermont', 'Washington', 'Wisconsin', 'West Virginia', 'Wyoming'];
 
+   '''
    highest = 0;
    highestState = '';
    for state in listOfStates:
       curState = states[state];
       nbr = naive_bayes_final(states, "someWord", curState);
       #multiply NP by another NP to get multiple words, times pState
-      if nbr > max:
-
-
    print(states);
    print(parties);
+   '''
          
 
 if __name__ == '__main__':
