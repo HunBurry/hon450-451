@@ -1,65 +1,87 @@
 ### TextBlob Built-In Naive Bayes Classification System
 
-from textblob.classifiers import NaiveBayesClassifier
+from textblob.classifiers import NaiveBayesClassifier;
+import pandas as pd;
+import time;
+import statistics;
 
-import csv
 
-myList = [];
-trainingData = [];
+def createTestTrain(listOfFiles):
+    holdData = [];
 
-with open("data12_02_2020_11-20.csv", "r") as f:
-    reader = csv.reader(f, delimiter="\t")
-    for i, line in enumerate(reader):
-        if i % 2 == 0:
-            myList.append(line[0])
+    for fileName in listOfFiles:
+        df = pd.read_csv(fileName, skip_blank_lines=True)
+        df.columns = ['index', 'twitterID', 'tweetText', 'polarity', 'nounPhrases', 'party', 'state'];
+        df.dropna();
+        for index, row in df.iterrows():
+            holdData.append(tuple([row['tweetText'], row['party']]));
 
-for line in myList:
-    info = line.split(',');
-    tweet = info[2]
-    polar = info[len(info) - 2]
-    c = tuple([tweet, polar]);
-    trainingData.append(c);
+    return holdData;
 
-cl = NaiveBayesClassifier(trainingData)
+def chunk(data, mode, classificationS):
+    length = len(data);
+    curPos = 0;
+    classifier = None;
+    if classificationS is not None:
+        classifier = classificationS;
 
-print(cl.classify("The big Oil Deal with OPEC Plus is done. This will save hundreds of thousands of energy jobs in the United States. I would like to thank and congratulate President Putin of Russia and King Salman of Saudi Arabia. I just spoke to them from the Oval Office. Great deal for all!"))
+    if mode == "train":
+        while curPos <= length:
+            if curPos == 0:
+                d = data[0:50]]
+                classifer = NaiveBayesClassifier(d);
+                curPos = 50;
+            else:
+                if curPos + 50 >= length:
+                    classifer.update(data[curPos:length]);
+                else:
+                    classifier.update(data[curPos:curPos + 50])
+                curPos = curPos + 50;
+                time.sleep(2);
+        return classifier;
+
+    elif mode == 'test':
+        listOfAccs = [];
+        while curPos <= length:
+            if curPos + 50 >= length:
+                listOfAccs.append(classifier.accuracy(data[curPos:length]));
+            else:
+                listOfAccs.append(classifier.accuracy(data[curPos:curPos + 50]));
+            curPos = curPos + 50;
+            time.sleep(2);
+        return listOfAccs;
+
+def main():
+    trainingFiles = ["data12_02_2020_11-20.csv"];
+    trainingData = createTestTrain(trainingFiles);
+    testingFiles = ["data05_02_2020_11-17.csv"];
+    testingData = createTestTrain(testingFiles);
+
+    classifier = chunk(trainingData, 'train', None);
+    accuracies = chunk(testingFiles, 'test', classifier);
+
+    print(classifier.show_informative_features());
+    print("Average Accuracy: " + str(statistics.mean(accuracies)));
+
+if __name__ == "__main__":
+    main();
+
+
+
+
+
+'''
+## possible ways to increase this -> my custom Naive Bayes, giving it more data, or combining it with ML and more data
+
+"""print(cl.classify("The big Oil Deal with OPEC Plus is done. This will save hundreds of thousands of energy jobs in the United States. I would like to thank and congratulate President Putin of Russia and King Salman of Saudi Arabia. I just spoke to them from the Oval Office. Great deal for all!"))
 
 # From Donald Trump, Should Predict 'R'
 
 print(cl.classify("No Montanan should have to choose between paying medical bills and putting food on the table for their families during a public health crisis. I fought to expand SNAP benefits to ensure no one in our state goes hungry as we combat this crisis."))
 
 # From Democractic Senator Tester, Should Predict 'D' 
+"""
 
-
-print(cl.show_informative_features());
-
-
-myList2 = []
-test = []
-
-with open("data05_02_2020_11-17.csv", "r") as f:
-    reader = csv.reader(f, delimiter="\t")
-    for i, line in enumerate(reader):
-        if i % 2 == 0:
-            myList2.append(line[0])
-
-for line in myList2:
-    info = line.split(',');
-    tweet = info[2]
-    polar = info[len(info) - 2]
-    c = tuple([tweet, polar]);
-    test.append(c);
-
-
-h1 = test[0:round(len(test) * .5)]
-h2 = test[round(len(test) * .5) + 1:len(test) - 1]
-
-print(cl.accuracy(h1))
-print(cl.accuracy(h2))
-
-## possible ways to increase this -> my custom Naive Bayes, giving it more data, or combining it with ML and more data
-
-'''
                           dotprod(weights, encode(fs,label))
 prob(fs|label) = ---------------------------------------------------
                  sum(dotprod(weights, encode(fs,l)) for l in labels)
