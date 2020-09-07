@@ -13,8 +13,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score
 from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
-import gensim;
-import spacy;
+from IPython.display import display
+#import gensim;
+#import spacy;
+import aspect_based_sentiment_analysis as absa
 
 def pos_tagging(data):
     req_tag = ['NN']
@@ -150,7 +152,7 @@ def main():
     all_words_repub = ' '.join(text for text in combine['parsed_tweet'][combine['party'] == 'R'])
     all_words_demo = ' '.join(text for text in combine['parsed_tweet'][combine['party'] == 'D'])
 
-    extract_words = pos_tagging(data)
+    #extract_words = pos_tagging(combine)
 
     ###############################################################################################################################
 
@@ -170,38 +172,107 @@ def main():
 
     recentTrumpTweet = []
     initialTweet = "We had FAR more people (many millions) watching us at the RNC than did Sleepy Joe and the DNC, and yet an ad just ran saying the opposite. This is what we’re up against. Lies. But we will WIN!"
-    parsed = ' '.join([w for w in initialTweet.split() if len(w)>2]))
+    parsed = ' '.join([w for w in initialTweet.split() if len(w)>2])
     parsed = parsed.split();
     recentTrumpTweet = [ps.stem(i) for i in parsed]
     recentTrumpTweet = ' '.join([word for word in recentTrumpTweet])
+    print(recentTrumpTweet)
+    bagOWords2 = bow_vectorizer.transform([recentTrumpTweet])
 
-    log_reg = LogisticRegression(random_state=5,solver='lbfgs')
-    log_reg.fit(x_train_bow, y_train_bow)
+    #log_reg = LogisticRegression(random_state=5,solver='lbfgs')
+    #log_reg.fit(x_train_bow, y_train_bow)
 
-    prediction_bow = log_reg.predict_proba(recentTrumpTweet)
+    #prediction_bow = log_reg.predict_proba(bagOWords2)
     #prediction_int = prediction_bow[:,1]>=0.3
     #prediction_int = prediction_int.astype(np.int)
     #log_bow = f1_score(y_valid_bow, prediction_int)
 
-    log_reg.fit(x_train_tfidf, y_train_tfidf)
-    prediction_tfidf = log_reg.predict_proba(recentTrumpTweet)
+    #log_reg.fit(x_train_tfidf, y_train_tfidf)
+    #prediction_tfidf = log_reg.predict_proba(bagOWords2)
     #prediction_int = prediction_tfidf[:,1]>=0.3
     #prediction_int = prediction_int.astype(np.int)
     #log_tfidf = f1_score(y_valid_tfidf, prediction_int)
 
     ###############################################################################################################################
 
+    foreign_policy = ['imperialism', 'occupation', 'un', 'united nations', 'united', 'hrc' +
+        'who', 'free trade', 'anarchy', 'nationalism', 'foreign', 'china', 'russia', 'cuba' +
+        'multinational', 'regional', 'trade', 'international', 'commerce', 'alien', 'refugee' + 
+        'border', 'ambassador', 'israel', 'pakistan', 'terrorism']
+
+    abortion = ['abortion', 'birth control', 'contraceptives', 'condoms', 'abortion laws', 'feticide' +
+        'abortion clinic', 'pro-choice', 'pro choice', 'prochoice', 'abortion pill', 'trimester' +
+        'first trimester', 'planned parenthood']
+
+    military = ['military', 'armed forces', 'air force', 'coast guard', 'national guard', 'army' +
+        'navy', 'marines', 'combat', 'forces', 'invasion', 'occupation', 'overseas', 'over seas' +
+        'foreign policy', 'defense', 'intelligence', 'military intelligence', 'militaristic', 'militia' +
+        'peacekeeping', 'occupy', 'regiment', 'noncombatant', 'naval']
+
+    president = ['trump', 'president', 'genius', 'smart', 'incompatent', 'idiot', 'leadership' +
+        'cabinet', 'election', 'biden', 'elect', 'harris', 'joe biden', 'donald trump', 'government' +
+        'corrupt', 'russia', 'head of state', 'presidency']
+
+    immigration = ['alien', 'wall', 'emigration', 'immigration', 'migration', 'illegal alien' + 
+        'naturalization', 'visa', 'citizenship', 'refugee', 'welfare', 'family reunification', 'border' + 
+        'immigrants', 'enforcement', 'seperation', 'asylum', 'sanctuary city', 'sancuary cities']
+
+    police = ['blm', 'defund', 'police', 'militiarization', 'police officer', 'sheriff', 'crime' +
+        'fatal', 'shooting', 'abuse of power', 'line of duty', 'protect', 'protecting', 'patrol',
+        'patrolling', 'law enforcement', 'riot', 'looting', 'arrest', 'racism', 'law', 'black lives matter']
+
+    economics = ['consumption', 'commerce', 'economics', 'economic', 'trade', 'gdp', 'China', 'investment' +
+        'stock market', 'stocks', 'stock', 'goods', 'financial', 'fiscal', 'economical', 'profitable' +
+        'economy', 'efficent', 'finance', 'monetary', 'management', 'economist', 'macroeconomics' + 
+        'microeconomics', 'protectionism', 'resources', 'real value', 'nominal value', 'capital', 'markets']
+
+    topics = ['Foreign Policy', 'Police', 'Economics', "Presidency" +
+        "Immigration", "Military", "Abortion"]
+
+    nlp = absa.load()
+
+    print(x_train_bow)
+    print(type(x_train_bow))
+    for row in range(x_train_bow):
+        results = nlp(combine[row]['parsed_tweet'], aspects=topics)
+        for topic in topics:
+            myChoice = [];
+            if topic == 'Economics':
+                myChoice = economics;
+            elif topic == 'Foreign Policy':
+                myChoice = foreign_policy;
+            elif topic == "Police":
+                myChoice = police;
+            elif topic == 'Presidency': 
+                myChoice = president;
+            elif topic == 'Immigration':
+                myChoice = immigration;
+            elif topic == 'Abortion':
+                myChoice = abortion;
+            elif topic == 'Military':
+                myChoice = military;
+            for word in myChoice:
+                if word in combine[row]['parsed_tweet']:
+                    x_train_bow[row].append(results[topic].sentiment)
+                    html = absa.probing.explain(topic)
+                    display(html)
+                else:
+                    x_train_bow[row].append(0)
+
     model_bow = XGBClassifier(random_state=9,learning_rate=0.9)
     model_bow.fit(x_train_bow, y_train_bow)
-    xgb = model_bow.predict_proba(recentTrumpTweet)
+    xgb = model_bow.predict_proba(bagOWords2)
+    print(xgb)
+
 
     #xgb=xgb[:,1]>=0.3
     #xgb_int=xgb.astype(np.int)
     #xgb_bow=f1_score(y_valid_bow,xgb_int)
 
-    model_tfidf = XGBClassifier(random_state=38,learning_rate=0.9)
-    model_tfidf.fit(x_train_tfidf, y_train_tfidf)
-    tfidfres = model_tfidf.predict_proba(recentTrumpTweet)
+    #model_tfidf = XGBClassifier(random_state=38,learning_rate=0.9)
+    #model_tfidf.fit(x_train_tfidf, y_train_tfidf)
+    #tfidfres = model_tfidf.predict_proba(bagOWords2)
+    #print(tfidfres)
     #xgb_tfidf=xgb_tfidf[:,1]>=0.3
     #xgb_int_tfidf=xgb_tfidf.astype(np.int)
     #score=f1_score(y_valid_tfidf,xgb_int_tfidf)
@@ -210,3 +281,11 @@ def main():
 
 if __name__ == '__main__':
     main();
+
+
+#get pos/neg numbers for each sentiment
+    #add to darafgrame
+
+#get kewywords
+#associate with sentiment
+#zero everything else otu
