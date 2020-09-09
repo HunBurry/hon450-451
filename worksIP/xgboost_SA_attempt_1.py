@@ -1,3 +1,5 @@
+from silence_tensorflow import silence_tensorflow
+silence_tensorflow()
 from sklearn.feature_extraction.text import CountVectorizer
 import re
 import pandas as pd 
@@ -195,75 +197,65 @@ def main():
 
     ###############################################################################################################################
 
-    foreign_policy = ['imperialism', 'occupation', 'un', 'united nations', 'united', 'hrc' +
-        'who', 'free trade', 'anarchy', 'nationalism', 'foreign', 'china', 'russia', 'cuba' +
-        'multinational', 'regional', 'trade', 'international', 'commerce', 'alien', 'refugee' + 
-        'border', 'ambassador', 'israel', 'pakistan', 'terrorism']
+    topics = ['economics', 'police', 'foreign_policy', "president" +
+        "immigration", "military", "abortion"]
 
-    abortion = ['abortion', 'birth control', 'contraceptives', 'condoms', 'abortion laws', 'feticide' +
-        'abortion clinic', 'pro-choice', 'pro choice', 'prochoice', 'abortion pill', 'trimester' +
-        'first trimester', 'planned parenthood']
+    topicsDict = {
+        'economics': ['consumption', 'commerce', 'economics', 'economic', 'trade', 'gdp', 'China', 'investment' +
+            'stock market', 'stocks', 'stock', 'goods', 'financial', 'fiscal', 'economical', 'profitable' +
+            'economy', 'efficent', 'finance', 'monetary', 'management', 'economist', 'macroeconomics' + 
+            'microeconomics', 'protectionism', 'resources', 'real value', 'nominal value', 'capital', 'markets'],
+        'police': ['blm', 'defund', 'police', 'militiarization', 'police officer', 'sheriff', 'crime' +
+            'fatal', 'shooting', 'abuse of power', 'line of duty', 'protect', 'protecting', 'patrol',
+            'patrolling', 'law enforcement', 'riot', 'looting', 'arrest', 'racism', 'law', 'black lives matter'],
+        'foreign_policy': ['imperialism', 'occupation', 'un', 'united nations', 'united', 'hrc' +
+            'who', 'free trade', 'anarchy', 'nationalism', 'foreign', 'china', 'russia', 'cuba' +
+            'multinational', 'regional', 'trade', 'international', 'commerce', 'alien', 'refugee' + 
+            'border', 'ambassador', 'israel', 'pakistan', 'terrorism'],
+        "immigration": ['alien', 'wall', 'emigration', 'immigration', 'migration', 'illegal alien' + 
+            'naturalization', 'visa', 'citizenship', 'refugee', 'welfare', 'family reunification', 'border' + 
+            'immigrants', 'enforcement', 'seperation', 'asylum', 'sanctuary city', 'sancuary cities'],
+        "president": ['trump', 'president', 'genius', 'smart', 'incompatent', 'idiot', 'leadership' +
+            'cabinet', 'election', 'biden', 'elect', 'harris', 'joe biden', 'donald trump', 'government' +
+            'corrupt', 'russia', 'head of state', 'presidency'],
+        "military": ['military', 'armed forces', 'air force', 'coast guard', 'national guard', 'army' +
+            'navy', 'marines', 'combat', 'forces', 'invasion', 'occupation', 'overseas', 'over seas' +
+            'foreign policy', 'defense', 'intelligence', 'military intelligence', 'militaristic', 'militia' +
+            'peacekeeping', 'occupy', 'regiment', 'noncombatant', 'naval'],
+        "abortion": ['abortion', 'birth control', 'contraceptives', 'condoms', 'abortion laws', 'feticide' +
+            'abortion clinic', 'pro-choice', 'pro choice', 'prochoice', 'abortion pill', 'trimester' +
+            'first trimester', 'planned parenthood']
+    }
 
-    military = ['military', 'armed forces', 'air force', 'coast guard', 'national guard', 'army' +
-        'navy', 'marines', 'combat', 'forces', 'invasion', 'occupation', 'overseas', 'over seas' +
-        'foreign policy', 'defense', 'intelligence', 'military intelligence', 'militaristic', 'militia' +
-        'peacekeeping', 'occupy', 'regiment', 'noncombatant', 'naval']
-
-    president = ['trump', 'president', 'genius', 'smart', 'incompatent', 'idiot', 'leadership' +
-        'cabinet', 'election', 'biden', 'elect', 'harris', 'joe biden', 'donald trump', 'government' +
-        'corrupt', 'russia', 'head of state', 'presidency']
-
-    immigration = ['alien', 'wall', 'emigration', 'immigration', 'migration', 'illegal alien' + 
-        'naturalization', 'visa', 'citizenship', 'refugee', 'welfare', 'family reunification', 'border' + 
-        'immigrants', 'enforcement', 'seperation', 'asylum', 'sanctuary city', 'sancuary cities']
-
-    police = ['blm', 'defund', 'police', 'militiarization', 'police officer', 'sheriff', 'crime' +
-        'fatal', 'shooting', 'abuse of power', 'line of duty', 'protect', 'protecting', 'patrol',
-        'patrolling', 'law enforcement', 'riot', 'looting', 'arrest', 'racism', 'law', 'black lives matter']
-
-    economics = ['consumption', 'commerce', 'economics', 'economic', 'trade', 'gdp', 'China', 'investment' +
-        'stock market', 'stocks', 'stock', 'goods', 'financial', 'fiscal', 'economical', 'profitable' +
-        'economy', 'efficent', 'finance', 'monetary', 'management', 'economist', 'macroeconomics' + 
-        'microeconomics', 'protectionism', 'resources', 'real value', 'nominal value', 'capital', 'markets']
-
-    topics = ['Foreign Policy', 'Police', 'Economics', "Presidency" +
-        "Immigration", "Military", "Abortion"]
-
-    nlp = absa.load()
-
-    print(x_train_bow)
-    print(type(x_train_bow))
-    for row in range(x_train_bow):
-        results = nlp(combine[row]['parsed_tweet'], aspects=topics)
+    #change this to a dictionary
+    nlp = absa.load();
+    overall = [];
+    for row in range(len(x_train_bow)):
+        results = nlp(combine[row]['tweet'], aspects=topics)
+        mySents = []
+        mySentsV2 = []
         for topic in topics:
-            myChoice = [];
-            if topic == 'Economics':
-                myChoice = economics;
-            elif topic == 'Foreign Policy':
-                myChoice = foreign_policy;
-            elif topic == "Police":
-                myChoice = police;
-            elif topic == 'Presidency': 
-                myChoice = president;
-            elif topic == 'Immigration':
-                myChoice = immigration;
-            elif topic == 'Abortion':
-                myChoice = abortion;
-            elif topic == 'Military':
-                myChoice = military;
+            myChoice = topicsDict[topic]
+            haveFound = False;
             for word in myChoice:
-                if word in combine[row]['parsed_tweet']:
-                    x_train_bow[row].append(results[topic].sentiment)
-                    html = absa.probing.explain(topic)
-                    display(html)
-                else:
-                    x_train_bow[row].append(0)
+                if (word in combine[row]['tweet']) and not haveFound:
+                    if results[topic].sentiment == absa.Sentiment.negative:
+                        mySents.append(1);
+                    elif results[topic].sentiment == absa.Sentiment.positive:
+                        mySents.append(2);
+                    mySentsV2.append(np.round(results[topic].scores, decimals=3))
+                    haveFound = True;
+                    print('----------------------------------------------------------------------------------')
+            if not haveFound:
+                mySents.append(0)
+                mySentsV2.append(0) #neutral
+        overall.append(mySents);
+    x_train_bow = np.append(x_train_bow, overall);
 
     model_bow = XGBClassifier(random_state=9,learning_rate=0.9)
     model_bow.fit(x_train_bow, y_train_bow)
     xgb = model_bow.predict_proba(bagOWords2)
     print(xgb)
-
 
     #xgb=xgb[:,1]>=0.3
     #xgb_int=xgb.astype(np.int)
@@ -289,3 +281,12 @@ if __name__ == '__main__':
 #get kewywords
 #associate with sentiment
 #zero everything else otu
+
+
+
+
+
+#make examples/test cases to verify working stuff
+#make an example for every topic, maybe some with multiple as well
+#fix the sbda to not append 0s each time
+#make matrix initially, update matrix then push to append
