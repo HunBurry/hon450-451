@@ -230,8 +230,10 @@ def main():
     #change this to a dictionary
     nlp = absa.load();
     overall = [];
+    print(type(combine))
     for row in range(len(x_train_bow)):
-        results = nlp(combine[row]['tweet'], aspects=topics)
+        print(combine['tweet'])
+        results = nlp(combine['tweet'][row], aspects=topics)
         mySents = []
         mySentsV2 = []
         for topic in topics:
@@ -245,7 +247,6 @@ def main():
                         mySents.append(2);
                     mySentsV2.append(np.round(results[topic].scores, decimals=3))
                     haveFound = True;
-                    print('----------------------------------------------------------------------------------')
             if not haveFound:
                 mySents.append(0)
                 mySentsV2.append(0) #neutral

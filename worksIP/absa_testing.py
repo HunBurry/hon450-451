@@ -43,7 +43,7 @@ topicsDict = {
     "military": ['military', 'armed forces', 'air force', 'coast guard', 'national guard', 'army' +
         'navy', 'marines', 'combat', 'forces', 'invasion', 'occupation', 'overseas', 'over seas' +
         'foreign policy', 'defense', 'intelligence', 'military intelligence', 'militaristic', 'militia' +
-        'peacekeeping', 'occupy', 'regiment', 'noncombatant', 'naval'],
+        'peacekeeping', 'occupy', 'regiment', 'noncombatant', 'naval', 'protect'],
     "abortion": ['abortion', 'birth control', 'contraceptives', 'condoms', 'abortion laws', 'feticide' +
         'abortion clinic', 'pro-choice', 'pro choice', 'prochoice', 'abortion pill', 'trimester' +
         'first trimester', 'planned parenthood']
@@ -56,7 +56,9 @@ topicsDict = {
 def justScores():
     nlp = absa.load();
 
-    tweet1 = "I think the President is doing an excellent job handling the ongoing issues with China. Despite the nation's desperate attempts to interfere with our economy, our military has protected important trade regions and ensured financial success for years to come."
+    tweet1 = "I think the President is doing an excellent job handling the ongoing issues with China. " +
+    "Despite the nation's desperate attempts to interfere with our economy, our military has protected important " +
+    "trade regions and ensured financial success for years to come."
     tweet2 = "Our President is a corrupt and terrible man. This is evident in how he has treated the leaders of numerous other nations, handled the nation's economy during the COVID situation, and protected corrupt police from justice." 
 
     results = nlp(tweet1, aspects=topics)
@@ -82,6 +84,11 @@ def justScores():
 
     print(mySents);
     print(mySentsV2);
+
+    topics = ['economics', 'police', 'foreign_policy', "president", "immigration", "military", "abortion"]
+
+    t = [2, 2, 2, 0, 0, 2, 0]
+    t2 = [array([0.173, 0.395, 0.431]), array([0.235, 0.159, 0.606]), array([0.072, 0.076, 0.852]), 0, 0, array([0.02, 0.02, 0.96]), 0]
 
 
 def explainations():
