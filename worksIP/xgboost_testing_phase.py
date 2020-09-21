@@ -7,6 +7,8 @@ from nltk import SnowballStemmer
 from sklearn.feature_extraction.text import CountVectorizer
 import warnings
 import numpy as np;
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
 from os import path, remove;
 warnings.filterwarnings("ignore")
 
@@ -187,13 +189,27 @@ def aspectifyV2(topics, dataframe, writeToFile):
 
 ###########################################################################
 
-def createClassifier(bagOfWords, sentiments, y_train):
-    x_train = np.append(bagOfWords, sentiments, axis=1);
+def createXGBClassifier(dataset, sentiments, y_train):
+    '''
+    '''
+    x_train = np.append(dataset, sentiments, axis=1);
     
-    model_bow = XGBClassifier(random_state=9,learning_rate=0.9)
-    model_bow.fit(x_train, y_train)
+    xgb_model = XGBClassifier(random_state=9,learning_rate=0.9)
+    xgb_model.fit(x_train, y_train)
 
-    return model_bow;
+    return xgb_model;
+
+###########################################################################
+
+def createLogisticRegressor(dataset, sentiments, y_train):
+    '''
+    '''
+    x_train = np.append(dataset, sentiments, axis=1);
+
+    log_reg = LogisticRegression(random_state=5,solver='lbfgs')
+    log_reg.fit(x_train_bow, y_train_bow)
+
+    return log_reg
 
 ###########################################################################
 
@@ -231,9 +247,11 @@ def main():
         data = createTrain(topics, Acomments, Bcomments, True);
         sentiments = aspectify(topics, data, True);
     bagOfWords, y_train, vectorizer = vectorize(data);
+    #tfidf_matrix, y_train, vectorizer = tfidf(data);
 
-    xgb_classifier = createClassifier(bagOfWords, sentiments, y_train);
-
+    xgb_classifier = createXGBClassifier(bagOfWords, sentiments, y_train);
+    #xgb_classifier = createXGBClassifier(tfidf_matrix, sentiments, y_train);
+    
     ########################################################
     
     userInput = input("Give me a tweet to test (use enter or 'F' to close): ")
