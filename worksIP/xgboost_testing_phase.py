@@ -82,7 +82,20 @@ def vectorize(dataframe):
 ###########################################################################
 
 def tfidf(dataframe):
-    pass;
+    '''
+    Parameters:
+        dataframe
+            Type = pd.DataFrame
+            Contains all training data.
+    Converts all text into term frequency–inverse document frequency (TFIDF). 
+    '''
+    tfidf = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = tfidf.fit_transform(dataframe['text'])
+
+    x_train = tfidf_matrix.todense();
+    y_train = dataframe['type'];
+
+    return x_train, y_train, tfidf;
 
 ###########################################################################
 
@@ -145,7 +158,10 @@ def aspectifyV2(topics, dataframe, writeToFile):
             If false, return the ABSA results in array form.
     Runs ABSA on all texts to find sentiments. Uses keywords to determine sentiment per indivudal keyword. 
     '''
-    aspectsArray = topics.keys();
+    aspectsArray = []
+    for key in topics.keys():
+        for item in topics[key]:
+            aspectsArray.append(item)
     nlp = absa.load();
     overall = []
 
@@ -153,16 +169,14 @@ def aspectifyV2(topics, dataframe, writeToFile):
         rowIQ = dataframe['text'][row];
         results = nlp(rowIQ, aspects=aspectsArray)
         mySents = [];
-        for key in aspectsArray:
-            for term in topics[key]:
-                if term in rowIQ:
-                    if results[key].sentiment == absa.Sentiment.negative:
-                        mySents.append(1)
-                    elif results[key].sentiment == absa.Sentiment.positive:
-                        mySents.append(2);
-                    haveFound = True;
-                else:
-                    mySents.append(0);
+        for term in aspectsArray:
+            if term in rowIQ:
+                if results[term].sentiment == absa.Sentiment.negative:
+                    mySents.append(1)
+                elif results[term].sentiment == absa.Sentiment.positive:
+                    mySents.append(2);
+            else:
+                mySents.append(0);
         overall.append(mySents)
 
     overall = np.asarray(overall);
@@ -187,8 +201,8 @@ def removeData():
     '''
     Removes data files.
     '''
-    if path.exists("bagOfWords.txt"):
-        remove("bagOfWords.txt")
+    if path.exists("data.csv"):
+        remove("data.csv")
     if path.exists("sentiments.txt"):
         remove("sentiments.txt")
 
