@@ -81,6 +81,11 @@ def vectorize(dataframe):
 
 ###########################################################################
 
+def tfidf(dataframe):
+    pass;
+
+###########################################################################
+
 def aspectify(topics, dataframe, writeToFile):
     '''
     Parameters:
@@ -204,8 +209,8 @@ def main():
         'dillos are great, but tesla stinks',
         'audi and toyota are my favorite' ]
     
-    if path.exists("text_data.txt") and path.exists("sentiments.txt") and path.exists("y_train.txt"):
-        data = pd.read_csv('text_data.csv', sep=' ', header=None, );
+    if path.exists("data.csv") and path.exists("sentiments.txt"):
+        data = pd.read_csv('data.csv', sep=' ', header=None);
         data.columns = ['text', 'type'];
         sentiments = np.genfromtxt("sentiments.txt");
     else:
@@ -221,6 +226,7 @@ def main():
     while (userInput != 'F' and userInput != ""):
 
         bagOfWordsUser = vectorizer.transform([userInput])
+        bagOfWordsUser = bagOfWordsUser.todense()
         sentimentsUser = np.asmatrix(aspectify(topics, pd.DataFrame({"text": [userInput]}), False));
         totalInformation = np.append(bagOfWordsUser, sentimentsUser, axis=1); #error here
         results = xgb_classifier.predict(totalInformation)
