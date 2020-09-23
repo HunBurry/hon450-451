@@ -351,7 +351,6 @@ def main():
     data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
     data = data.dropna();
     data.columns = ['tweet', 'party']
-
     #data = tokenize(data);
     
     if path.exists("sentiments.txt"):

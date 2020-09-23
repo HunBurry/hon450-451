@@ -1,24 +1,16 @@
 from silence_tensorflow import silence_tensorflow
 silence_tensorflow()
-from sklearn.feature_extraction.text import CountVectorizer
-import re
-import pandas as pd 
-import numpy as np 
-import seaborn as sns
-import string
-import nltk
-import warnings 
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-from nltk import PorterStemmer
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import f1_score
-from sklearn.linear_model import LogisticRegression
-from xgboost import XGBClassifier
-from IPython.display import display
-#import gensim;
-#import spacy;
+import pandas as pd
 import aspect_based_sentiment_analysis as absa
+from xgboost import XGBClassifier
+from nltk import SnowballStemmer
+from sklearn.feature_extraction.text import CountVectorizer
+import warnings
+import numpy as np;
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from os import path, remove;
+warnings.filterwarnings("ignore")
 
 def pos_tagging(data):
     req_tag = ['NN']
