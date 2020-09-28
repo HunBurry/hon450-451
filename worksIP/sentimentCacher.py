@@ -39,7 +39,8 @@ topics = {
         'peacekeeping', 'occupy', 'regiment', 'noncombatant', 'naval'],
     "abortion": ['abortion', 'birth control', 'contraceptives', 'condoms', 'abortion laws', 'feticide',
         'abortion clinic', 'pro-choice', 'pro choice', 'prochoice', 'abortion pill', 'trimester',
-        'first trimester', 'planned parenthood']
+        'first trimester', 'planned parenthood'],
+    'general': ['healthcare', 'ppe', 'personal protective equipment', 'covid', 'health care', 'health', 'coronavirus', 'covid-19']
 }
 
 aspectsArray = []
@@ -49,6 +50,8 @@ if path.exists('sentiments.csv'):
     for key in topics.keys():
         for item in topics[key]:
             aspectsArray.append(item)
+            if item not in data.columns:
+                data[item] = np.nan;
 else:
     data = pd.read_csv('../data/data12_04_2020_22-58.csv')
     data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
@@ -67,25 +70,28 @@ for i in range(10):
 ideal = int(input("How many rows of data do you want to run this on? "));
 counter = 0;
 
-print(data)
+print(data.dtypes)
 
 for index, row in data.iterrows():
     if counter < ideal:
         needToRun = [];
         for aspect in aspectsArray:
-            if not isinstance(row[aspect], int) and np.isnan(row[aspect]):
+            if np.isnan(pd.to_numeric(row[aspect], errors='coerce')):
                 needToRun.append(aspect);
+        print("need to run:", needToRun)
         if len(needToRun) > 0:
             results = nlp(row['tweet'], aspects=needToRun);
             for term in needToRun:
+                print(term)
+                print(results[term].sentiment)
                 if term in row['tweet']:
                     if results[term].sentiment == absa.Sentiment.negative:
-                        row[term] = 1;
+                        data.at[index, term] = 1
                     elif results[term].sentiment == absa.Sentiment.positive:
-                        row[term] = 2;
+                        data.at[index, term] = 2
                 else:
-                    row[term] = 0;
-            counter = counter + 1;
+                    data.at[index, term] = 0
+            counter = counter + 1
 
 print(data)
 
