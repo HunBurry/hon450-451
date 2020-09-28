@@ -1,3 +1,7 @@
+'''
+
+'''
+
 from silence_tensorflow import silence_tensorflow
 silence_tensorflow()
 import pandas as pd
@@ -38,38 +42,51 @@ topics = {
         'first trimester', 'planned parenthood']
 }
 
-data = pd.read_csv('../data/data12_04_2020_22-58.csv')
-data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
-data = data.dropna();
-data.columns = ['tweet', 'party']
-data.reset_index(drop=True, inplace=True)
-
 aspectsArray = []
-for key in topics.keys():
-    for item in topics[key]:
-        aspectsArray.append(item)
+
+if path.exists('sentiments.csv'):
+    data = pd.read_csv('sentiments.csv')
+    for key in topics.keys():
+        for item in topics[key]:
+            aspectsArray.append(item)
+else:
+    data = pd.read_csv('../data/data12_04_2020_22-58.csv')
+    data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
+    data = data.dropna();
+    data.columns = ['tweet', 'party']
+    data.reset_index(drop=True, inplace=True);
+    for key in topics.keys():
+        for item in topics[key]:
+            aspectsArray.append(item);
+            data[item] = np.nan;
+
 nlp = absa.load();
 for i in range(10):
     print('')
 
-print(aspectsArray)
+ideal = int(input("How many rows of data do you want to run this on? "));
+counter = 0;
 
-numberOfLines = 0;
-if path.exists("sentiments.txt"):
-    numberOfLines = len(open("sentiments.txt").readlines())
+print(data)
 
-for row in range(len(data) - numberOfLines):
-    rowIQ = data['tweet'][row + numberOfLines];
-    results = nlp(rowIQ, aspects=aspectsArray)
-    myFile = open("sentiments.txt", "a")
-    myString = '';
-    for term in aspectsArray:
-        if term in rowIQ:
-            if results[term].sentiment == absa.Sentiment.negative:
-                myString = myString + "1 ";
-            elif results[term].sentiment == absa.Sentiment.positive:
-                myString = myString + "2 ";
-        else:
-            myString = myString + "0 ";
-    myFile.write(myString + '\n')
-    myFile.close()
+for index, row in data.iterrows():
+    if counter < ideal:
+        needToRun = [];
+        for aspect in aspectsArray:
+            if not isinstance(row[aspect], int) and np.isnan(row[aspect]):
+                needToRun.append(aspect);
+        if len(needToRun) > 0:
+            results = nlp(row['tweet'], aspects=needToRun);
+            for term in needToRun:
+                if term in row['tweet']:
+                    if results[term].sentiment == absa.Sentiment.negative:
+                        row[term] = 1;
+                    elif results[term].sentiment == absa.Sentiment.positive:
+                        row[term] = 2;
+                else:
+                    row[term] = 0;
+            counter = counter + 1;
+
+print(data)
+
+data.to_csv('sentiments.csv', index=None, mode='w')
