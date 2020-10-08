@@ -186,7 +186,7 @@ def aspectifyV2(topics, dataframe, writeToFile):
     overall = np.asarray(overall);
 
     if writeToFile:
-        np.savetxt('sentiments.txt', overall)
+        np.savetxt('sentiments.csv', overall)
     return overall;
 
 ###########################################################################

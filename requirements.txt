@@ -1,3 +1,8 @@
 pandas
 tweepy
 textblob
+tensorflow
+silence_tensorflow
+aspect_based_sentiment_analysis
+numpy
+xgboost
