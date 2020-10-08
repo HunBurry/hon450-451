@@ -84,24 +84,6 @@ def diff(first, second):
    second = set(second)
    return [item for item in first if item not in second];
 
-def getCategories(tweet):
-   notedCategories = []; #partisanship, abortion, immigration, economics, millitary, etc;
-   economicTerms = ['stock', 'economy'];
-   immigrationTerms = ['wall', 'immigration', 'immigrants', 'sanctuary cities',];
-
-   for term in economicTerms:
-      if term in tweet:
-         notedCategories.append("economics");
-         break;
-
-   for term in immigrationTerms:
-      if term in tweet:
-         notedCategories.append('immigration');
-         break;
-
-   return notedCategories;
-   
-
 def limit_handled(cursor, finished, total, diction):
    while True:
       try:
@@ -152,10 +134,6 @@ def createFrame(api, tweetsToPull, users):
    print("Iteration completed...");
    
    tweets = pd.DataFrame(diction, columns=['user', 'tweetText', 'simplePolarity', 'nouns', 'party', 'state']);
-
-   ##new data frame -> one for state, one for party
-   ##also include number used, highestSent, lowestSent, averageSent;
-   ##https://scikit-learn.org/stable/modules/naive_bayes.html
    return tweets;
 
 def main():
@@ -163,7 +141,7 @@ def main():
    
    time.sleep(5);
    if len(sys.argv) <= 1:
-      textFile = 'congress.txt'
+      textFile = '../congress.txt'
    else:
       textFile = sys.argv[1];
    auth = tweepy.OAuthHandler("ZqarwsmGvqGU8IR7pmRUeG23j", "RfYaQf6l4hHIkynjvV5Yi17TzYjy2xBv9A0gwEjbFKfgxSrO3O");
@@ -190,28 +168,12 @@ def main():
    data = createFrame(api, tweetsToPull, users);
    print(data);
    
-   '''
-   numTotal = 0;
-   for key in stateBreakdown.keys():
-      if "D" not in stateBreakdown[key].keys():
-         stateBreakdown[key]["D"] = 0;
-      else:
-         numTotal = numTotal + stateBreakdown[key]['D'];
-      if "R" not in stateBreakdown[key].keys():
-         stateBreakdown[key]['R'] = 0;
-      else:
-         numTotal = numTotal + stateBreakdown[key]['R'];
-
-         '''
-       
-   
    now = datetime.now();
    dt_string = now.strftime("%d_%m_%Y_%H-%M");
 
    filename = 'data' + dt_string + '.csv'
 
-   with open(filename, 'a') as f:
-      data.to_csv(f, header=False)
+   data.to_csv(filename);
 
    highestSent = {};
    lowestSent = {};
@@ -245,20 +207,5 @@ def main():
    'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 
    'Texas', 'Utah', 'Virginia', 'Vermont', 'Washington', 'Wisconsin', 'West Virginia', 'Wyoming'];
 
-   '''
-   highest = 0;
-   highestState = '';
-   for state in listOfStates:
-      curState = states[state];
-      nbr = naive_bayes_final(states, "someWord", curState);
-      #multiply NP by another NP to get multiple words, times pState
-   print(states);
-   print(parties);
-   '''
-         
-
 if __name__ == '__main__':
    main();
-
-#ok do machine learning stuff...
-#use machine learning and some training data to determine whether  or not tweets fall into a certain cateofry... then run aspect-based on those assigned categoeis
