@@ -78,7 +78,7 @@ def beginCache():
         print('')
 
     counter = 0;
-    locs = np.array([]);
+    locs = []
 
     for index, row in data.iterrows():
         needToRun = [];
@@ -99,7 +99,7 @@ def beginCache():
             else:
                 locs.append(index) 
         data.to_csv('sentiments3.csv', index=None, mode='w')
-        np.savetxt('needToRemove.txt', locs, delimiter=', ');
+        np.savetxt('needToRemove.txt', np.array(locs), delimiter=', ');
 
 if __name__ == "__main__":
     beginCache();
