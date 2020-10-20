@@ -10,6 +10,7 @@ import numpy as np;
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from os import path, remove;
+from langdetect import detect
 
 def getTopics():
     '''
@@ -45,7 +46,7 @@ def getTopics():
     return topics;
 
 
-def beginCache(ideal):
+def beginCache():
     '''
     When given a number of lines to run on, runs ABSA on said number of needed rows. For a more in-depth
     description of ABSA functionality within the project, see xgboost_SA_attempt2.aspectifyv2. 
@@ -54,15 +55,15 @@ def beginCache(ideal):
 
     aspectsArray = []
 
-    if path.exists('sentiments.csv'):
-        data = pd.read_csv('sentiments.csv')
+    if path.exists('sentiments3.csv'):
+        data = pd.read_csv('sentiments3.csv')
         for key in topics.keys():
             for item in topics[key]:
                 aspectsArray.append(item)
                 if item not in data.columns:
                     data[item] = np.nan;
     else:
-        data = pd.read_csv('../data/data12_04_2020_22-58.csv')
+        data = pd.read_csv('../data/data12_02_2020_11-16.csv')
         data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
         data = data.dropna();
         data.columns = ['tweet', 'party']
@@ -77,6 +78,7 @@ def beginCache(ideal):
         print('')
 
     counter = 0;
+    locs = np.array([]);
 
     for index, row in data.iterrows():
         needToRun = [];
@@ -84,16 +86,20 @@ def beginCache(ideal):
             if np.isnan(pd.to_numeric(row[aspect], errors='coerce')):
                 needToRun.append(aspect);
         if len(needToRun) > 0:
-            results = nlp(row['tweet'], aspects=needToRun);
-            for term in needToRun:
-                if term in row['tweet'].lower():
-                    if results[term].sentiment == absa.Sentiment.negative:
-                        data.at[index, term] = 1
-                    elif results[term].sentiment == absa.Sentiment.positive:
-                        data.at[index, term] = 2
-                else:
-                    data.at[index, term] = 0
-        data.to_csv('sentiments.csv', index=None, mode='w')
+            if detect(row['tweet']) == 'en':
+                results = nlp(row['tweet'], aspects=needToRun);
+                for term in needToRun:
+                    if term in row['tweet'].lower():
+                        if results[term].sentiment == absa.Sentiment.negative:
+                            data.at[index, term] = 1
+                        elif results[term].sentiment == absa.Sentiment.positive:
+                            data.at[index, term] = 2
+                    else:
+                        data.at[index, term] = 0
+            else:
+                locs.append(index) 
+        data.to_csv('sentiments3.csv', index=None, mode='w')
+        np.savetxt('needToRemove.txt', locs, delimiter=', ');
 
 if __name__ == "__main__":
-    beginCache(ideal);
+    beginCache();
