@@ -12,9 +12,16 @@ def createTestTrain(listOfFiles):
     for fileName in listOfFiles:
         df = pd.read_csv(fileName, skip_blank_lines=True)
         df.columns = ['index', 'twitterID', 'tweetText', 'polarity', 'nounPhrases', 'party', 'state'];
-        df.dropna();
+        df.dropna(axis=0);
+        #print(df.head(50))
         for index, row in df.iterrows():
             holdData.append(tuple([row['tweetText'], row['party']]));
+
+        df['train'] = df[['tweetText', 'party']].apply(tuple, axis=1)
+
+        aTrain = df['train'].values.tolist()
+
+        return aTrain;
 
     return holdData;
 
@@ -28,8 +35,10 @@ def chunk(data, mode, classificationS):
     if mode == "train":
         while curPos <= length:
             if curPos == 0:
-                d = data[0:50]]
-                classifer = NaiveBayesClassifier(d);
+                d = data[0:50]
+                for i in d:
+                    print(i)
+                classifer = NaiveBayesClassifier(data);
                 curPos = 50;
             else:
                 if curPos + 50 >= length:
@@ -52,15 +61,15 @@ def chunk(data, mode, classificationS):
         return listOfAccs;
 
 def main():
-    trainingFiles = ["data12_02_2020_11-20.csv"];
+    trainingFiles = ["data07_10_2020_22-08.csv"];
     trainingData = createTestTrain(trainingFiles);
-    testingFiles = ["data05_02_2020_11-17.csv"];
+    testingFiles = ["data31_08_2020_09-34.csv"];
     testingData = createTestTrain(testingFiles);
 
     classifier = chunk(trainingData, 'train', None);
-    accuracies = chunk(testingFiles, 'test', classifier);
+    accuracies = chunk(testingData, 'test', classifier);
 
-    print(classifier.show_informative_features());
+    #print(classifier.show_informative_features());
     print("Average Accuracy: " + str(statistics.mean(accuracies)));
 
 if __name__ == "__main__":

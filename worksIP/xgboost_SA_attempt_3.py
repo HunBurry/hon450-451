@@ -81,7 +81,6 @@ def vectorize(dataframe):
     else:
         bagOfWords = bow_vectorizer.fit_transform(dataframe['tweet'])
 
-    print(type(bagOfWords))
     x_train = bagOfWords.todense();
     y_train = dataframe['party'];
 
@@ -200,7 +199,7 @@ def aspectifyV2(topics, dataframe, writeToFile):
 
 ###########################################################################
 
-def createXGBClassifier(dataset, sentiments, y_train):
+def createXGBClassifier(bag, dataset, y_train):
     '''
     Parameters:
         dataset:
@@ -214,16 +213,18 @@ def createXGBClassifier(dataset, sentiments, y_train):
             Array of all training data. 
     Returns trained XGB Classifier. 
     '''
-    #x_train = np.append(dataset, sentiments, axis=1);
+    dataset = dataset.drop(['tweet', 'party'], axis=1);
+    sentiments = dataset.to_numpy();
+    x_train = np.append(bag, sentiments, axis=1);
     
-    xgb_model = XGBClassifier(random_state=9,learning_rate=0.9)
+    xgb_model = XGBClassifier(random_state=9,learning_rate=0.3)
     xgb_model.fit(x_train, y_train)
 
     return xgb_model;
 
 ###########################################################################
 
-def createLogisticRegressor(dataset, sentiments, y_train):
+def createLogisticRegressor(bag, dataset, y_train):
     '''
     Parameters:
         dataset:
@@ -237,7 +238,9 @@ def createLogisticRegressor(dataset, sentiments, y_train):
             Array of all training data. 
     Returns trained Logistic Regressor.
     '''
-    x_train = np.append(dataset, sentiments, axis=1);
+    dataset = dataset.drop(['tweet', 'party'], axis=1);
+    sentiments = dataset.to_numpy();
+    x_train = np.append(bag, sentiments, axis=1);
 
     log_reg = LogisticRegression(random_state=5,solver='lbfgs')
     log_reg.fit(x_train, y_train)
@@ -272,23 +275,20 @@ def test_and_predictionsV1(classifier, topics, vectorizer):
     Gets individual rows, parses individually, then computes prediction on each one. Overall prediction is most frequent prediction.
     '''
     data = pd.read_csv('../data/sentiments2.csv')
-    #data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
     data = data.dropna();
     #data.columns = ['tweet', 'party'] 
     #data = tokenize(data);
-    #trumpTweet = "For half a century, Joe Biden has been outsourcing your jobs, opening your borders, and sacrificing American blood and treasure in endless foreign wars. Joe Biden is a corrupt politician—If Biden Wins, China Wins. When We Win, Florida Wins—and America Wins!"
 
     resultsOverall = []
     for number in range(5):
         row = data.iloc[[number]];
         bagOfWords = vectorizer.transform([row['tweet']]);
         bagOfWords = bagOfWords.todense()
-        sentiments = np.asmatrix(aspectifyV2(topics, pd.DataFrame({"tweet": [row['tweet']]}), False));
+        sentiments = data.drop(['tweet', 'party'], axis=1).to_numpy();
         totalInformation = np.append(bagOfWords, sentiments, axis=1);
         results = classifier.predict(totalInformation);
         resultsOverall.append(results);
     prediction = max(set(resultsOverall), key = resultsOverall.count);
-    
 
     return prediction;
 
@@ -308,19 +308,58 @@ def test_and_predictionsV2(classifier, topics, vectorizer):
             Vectorization system for word frequency. 
     Get multiple rows at once, parse them all, use that for prediction. 
     '''
-    data = pd.read_csv('../data/data12_02_2020_11-32.csv')
-    data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
+    data = pd.read_csv('../data/sentiments2.csv')
+    #data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
     data = data.dropna();
-    data.columns = ['tweet', 'party'] 
+    #data.columns = ['tweet', 'party'] 
     #data = tokenize(data);
+    correct = 0;
+    incorrect = 0;
+    '''
 
-    data = data.head(5);
+    for index, row in data.iterrows():
+        bagOfWords = vectorizer.transform([row['tweet']]);
+        bagOfWords = bagOfWords.todense();
+        sentiments = data.drop(['tweet', 'party'], axis=1).to_numpy();
+        totalInformation = np.append(bagOfWords, sentiments, axis=1);
+        results = classifier.predict(totalInformation);
+        if results == data['party']:
+            correct = correct + 1;
+        else:
+            incorrect = incorrect + 1;
+    '''
+        
+    
+    data = data.head(data.shape[0]);
     bagOfWords = vectorizer.transform(data['tweet']); #if tokenize, change to parsed_tweet
-    sentiments = np.asmatrix(aspectifyV2(topics, data, True))
+    bagOfWords = bagOfWords.todense();
+    sentiments = data.drop(['tweet', 'party'], axis=1).to_numpy();
+    #print(bagOfWords);
+    #print(sentiments)
     totalInformation = np.append(bagOfWords, sentiments, axis=1);
     results = classifier.predict(totalInformation);
-
-    return results;
+    #print(len(results))
+    #print(data.shape[0])
+    counter = 0;
+    corrects = {};
+    incorrects = {};
+    for index, row in data.iterrows():
+        #print(index)
+        if results[counter] == row['party']:
+            correct = correct + 1;
+            if row['party'] in corrects.keys():
+                corrects[row['party']] = corrects[row['party']] + 1;
+            else:
+                corrects[row['party']] = 1;
+        else:
+            incorrect = incorrect + 1;
+            if row['party'] in incorrects.keys():
+                incorrects[row['party']] = incorrects[row['party']] + 1;
+            else:
+                incorrects[row['party']] = 1;
+        counter = counter + 1; 
+    
+    return correct, incorrect, corrects, incorrects;
 
 ###########################################################################
 
@@ -328,10 +367,10 @@ def main():
     topics = sentimentCacher.getTopics();
 
     data = pd.read_csv('../data/combinedSentiments.csv')
-    print(data.columns)
-    data = data.drop(data.columns[0, 1], axis=1)
+    #print(data.columns)
+    data = data.drop(['Unnamed: 0', 'Unnamed: 0.1'], axis=1)
     data = data.dropna();
-    data.columns = ['tweet', 'party']
+    #data.columns = ['tweet', 'party']
     #data = tokenize(data);
     
     #if path.exists("sentiments.csv"):
@@ -344,13 +383,24 @@ def main():
     bagOfWords, y_train, vectorizer = vectorize(data);
     #tfidf_matrix, y_train, vectorizer = tfidf(data);
 
-    xgb_classifier = createXGBClassifier(bagOfWords, [], y_train);
+    xgb_classifier = createXGBClassifier(bagOfWords, data, y_train);
     #xgb_classifier = createXGBClassifier(tfidf_matrix, sentiments, y_train);
-    #logistic_regressor = createLogisticRegressor(bagOfWords, sentiments, y_train);
+    logistic_regressor = createLogisticRegressor(bagOfWords, data, y_train);
     #logistic_regressor = createLogisticRegressor(tfidf_matrix, sentiments, y_train);
     
-    test_and_predictionsV1(xgb_classifier, topics, vectorizer);
-    #test_and_predictionsV2(xgb_classifier, topics, vectorizer);
+    #test_and_predictionsV1(xgb_classifier, topics, vectorizer);
+    correct, incorrect, corrects, incorrects = test_and_predictionsV2(xgb_classifier, topics, vectorizer);
+    print("Out XGBoost got " + str(correct) + " out of " + str((correct + incorrect)) + " right. This equates to a " + str(correct/(correct+incorrect) * 100) + " accuracy level.")
+    print("The regressor got a " + str(corrects['R']/(corrects['R']+incorrects['R']) * 100) + " percent accuracy level for Republicans, and a " + str(corrects['D']/(corrects['D']+incorrects['D']+incorrects[' D']) * 100) + " percent accuracy level for Democrats.")
+    #print(incorrects)
+    correct, incorrect, corrects, incorrects = test_and_predictionsV2(logistic_regressor, topics, vectorizer);
+    print("Our LogisticRegressor got " + str(correct) + " out of " + str((correct + incorrect)) + " right. This equates to a " + str(correct/(correct+incorrect) * 100) + " accuracy level.")
+    print("The regressor got a " + str(corrects['R']/(corrects['R']+incorrects['R']) * 100) + " percent accuracy level for Republicans, and a " + str(corrects['D']/(corrects['D']+incorrects['D']+incorrects[' D']) * 100) + " percent accuracy level for Democrats.")
+    #print(str(correct/(correct+incorrect)))
+    #print(corrects);
+    #print(incorrects)
+    #res = test_and_predictionsV2(xgb_classifier, topics, vectorizer);
+    #print(res)
 
 if __name__ == "__main__":
     main();
