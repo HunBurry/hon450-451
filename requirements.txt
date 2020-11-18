@@ -1,8 +1,7 @@
-pandas
-tweepy
-textblob
-tensorflow
-silence_tensorflow
-aspect_based_sentiment_analysis
-numpy
-xgboost
+pandas >= 1.1.14
+tweepy >= 3.9.0
+textblob >= 0.16.0
+aspect_based_sentiment_analysis >= 2.0.1
+numpy >= 1.19.4
+xgboost >= 1.2.1
+silence_tensorflow >= 1.1.1

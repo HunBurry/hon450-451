@@ -101,5 +101,31 @@ def beginCache():
         data.to_csv('sentiments3.csv', index=None, mode='w')
         np.savetxt('needToRemove.txt', np.array(locs), delimiter=', ');
 
+def single_row_sents(tweet):
+    topics = getTopics();
+    aspectsArray = [];
+    for key in topics.keys():
+        for item in topics[key]:
+            aspectsArray.append(item)
+    
+    nlp = absa.load();
+    for i in range(10):
+        print('')
+
+    resultsDict = {};
+
+    results = nlp(tweet, aspects=aspectsArray);
+    for term in aspectsArray:
+        if term in tweet.lower():
+            if results[term].sentiment == absa.Sentiment.negative:
+                resultsDict[term] = 1
+            elif results[term].sentiment == absa.Sentiment.positive:
+                resultsDict[term] = 2
+        else:
+            resultsDict[term] = 0 
+
+    return pd.DataFrame([resultsDict])
+
+
 if __name__ == "__main__":
     beginCache();

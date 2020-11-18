@@ -13,6 +13,7 @@ from os import path, remove;
 import sys;
 warnings.filterwarnings("ignore")
 import sentimentCacher
+import pickle
 
 ########################################################################
 
@@ -83,6 +84,9 @@ def vectorize(dataframe):
 
     x_train = bagOfWords.todense();
     y_train = dataframe['party'];
+
+    filename = 'vectorizer_model'
+    pickle.dump(bow_vectorizer, open(filename, 'wb'))
 
     return x_train, y_train, bow_vectorizer;
 
@@ -220,6 +224,8 @@ def createXGBClassifier(bag, dataset, y_train):
     xgb_model = XGBClassifier(random_state=9,learning_rate=0.3)
     xgb_model.fit(x_train, y_train)
 
+    filename = 'xgboost_model'
+    pickle.dump(xgb_model, open(filename, 'wb'))
     return xgb_model;
 
 ###########################################################################
@@ -245,7 +251,10 @@ def createLogisticRegressor(bag, dataset, y_train):
     log_reg = LogisticRegression(random_state=5,solver='lbfgs')
     log_reg.fit(x_train, y_train)
 
-    return log_reg
+    filename = 'log_reg_model_getDateHere()'
+    pickle.dump(log_reg, open(filename, 'wb'))
+
+    return log_reg;
 
 ###########################################################################
 

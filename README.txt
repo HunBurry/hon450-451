@@ -1,1 +1,1 @@
-run such as 'python twitterAPI.py congress.txt'
+run such as 'python src/interface.py'
