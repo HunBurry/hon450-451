@@ -126,6 +126,34 @@ def single_row_sents(tweet):
 
     return pd.DataFrame([resultsDict])
 
+def single_user_sents(tweets):
+    topics = getTopics();
+    aspectsArray = [];
+    for key in topics.keys():
+        for item in topics[key]:
+            aspectsArray.append(item)
+    
+    nlp = absa.load();
+    for i in range(10):
+        print('')
+
+    myResults = [];
+
+    for tweet in tweets:
+        resultsDict = {};
+        results = nlp(tweet, aspects=aspectsArray);
+        for term in aspectsArray:
+            if term in tweet.lower():
+                if results[term].sentiment == absa.Sentiment.negative:
+                    resultsDict[term] = 1
+                elif results[term].sentiment == absa.Sentiment.positive:
+                    resultsDict[term] = 2
+            else:
+                resultsDict[term] = 0 
+        myResults.append(resultsDict)
+
+    return pd.DataFrame(myResults)
+
 
 if __name__ == "__main__":
     beginCache();

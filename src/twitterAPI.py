@@ -43,7 +43,22 @@ def limit_handled(cursor, finished, total, diction):
          break;
 
 def single_user_population(username):
-    pass;
+    auth = tweepy.OAuthHandler("ZqarwsmGvqGU8IR7pmRUeG23j", "RfYaQf6l4hHIkynjvV5Yi17TzYjy2xBv9A0gwEjbFKfgxSrO3O");
+    auth.set_access_token("4819588312-rXEoklKXE27hSQLnhERd8UBpJLp7FmVVk2CJles", "2imqeKDTNq6T1GeGCJUtL1yvpr6EJlOAYykAJxjhAIPvZ");
+
+    api = tweepy.API(auth); # Connects to Twitter application using codes. 
+    print("Authorizaion successful.")
+    tweetsToPull = 5; # Number of tweets to pull for each individual user.
+    tweets = [];
+    cursor = tweepy.Cursor(api.user_timeline, screen_name=username, include_rts=True, tweet_mode='extended').items(tweetsToPull);
+    for post in cursor:
+        cleanedTweet = clean_tweet(post.full_text);
+        if cleanedTweet[0:2] == 'RT':
+            cleanedTweet = cleanedTweet[2:];
+        tweets.append(cleanedTweet)
+    
+    tweets = pd.DataFrame(tweets, columns=['tweet']);
+    return tweets;
 
 def createFrame(api, tweetsToPull, users):
    diction = [];
