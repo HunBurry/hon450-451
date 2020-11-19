@@ -1,7 +1,7 @@
 langdetect >= 1.0.8
 pandas >= 1.1.4
 tweepy >= 3.9.0
-textblob >= 0.16.0
+textblob >= 0.15.3
 aspect_based_sentiment_analysis >= 2.0.1
 numpy >= 1.19.4
 xgboost >= 1.2.1
