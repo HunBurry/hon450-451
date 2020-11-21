@@ -6,6 +6,8 @@ from xgboost import XGBClassifier
 from nltk import SnowballStemmer
 from sklearn.feature_extraction.text import CountVectorizer
 import warnings
+import sys;
+import glob
 import numpy as np;
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -46,32 +48,28 @@ def getTopics():
     return topics;
 
 
-def beginCache():
+def beginCache(filename):
     '''
+    
     When given a number of lines to run on, runs ABSA on said number of needed rows. For a more in-depth
     description of ABSA functionality within the project, see xgboost_SA_attempt2.aspectifyv2. 
     '''
-    topics = getTopics();
 
+    topics = getTopics();
     aspectsArray = []
 
-    if path.exists('sentiments3.csv'):
-        data = pd.read_csv('sentiments3.csv')
-        for key in topics.keys():
-            for item in topics[key]:
-                aspectsArray.append(item)
-                if item not in data.columns:
-                    data[item] = np.nan;
-    else:
-        data = pd.read_csv('../data/data12_02_2020_11-16.csv')
-        data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
-        data = data.dropna();
-        data.columns = ['tweet', 'party']
-        data.reset_index(drop=True, inplace=True);
-        for key in topics.keys():
-            for item in topics[key]:
-                aspectsArray.append(item);
-                data[item] = np.nan;
+    if not filename:
+        filename = glob.glob('../data/user_data/*.csv')[0];
+    data = pd.read_csv('../data/user_data/' + filename)
+
+    data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
+    data = data.dropna();
+    data.columns = ['tweet', 'party']
+    data.reset_index(drop=True, inplace=True);
+    for key in topics.keys():
+        for item in topics[key]:
+            aspectsArray.append(item);
+            data[item] = np.nan;
 
     nlp = absa.load();
     for i in range(10):
@@ -98,10 +96,13 @@ def beginCache():
                         data.at[index, term] = 0
             else:
                 locs.append(index) 
-        data.to_csv('sentiments3.csv', index=None, mode='w')
-        np.savetxt('needToRemove.txt', np.array(locs), delimiter=', ');
+        data.to_csv('../data/user_data/completedSentiments.csv', index=None, mode='w')
+        #np.savetxt('needToRemove.txt', np.array(locs), delimiter=', ');
 
 def single_row_sents(tweet):
+    '''
+
+    '''
     topics = getTopics();
     aspectsArray = [];
     for key in topics.keys():
@@ -114,7 +115,10 @@ def single_row_sents(tweet):
 
     resultsDict = {};
 
+    print(tweet);
+
     results = nlp(tweet, aspects=aspectsArray);
+    print(results)
     for term in aspectsArray:
         if term in tweet.lower():
             if results[term].sentiment == absa.Sentiment.negative:
@@ -156,4 +160,4 @@ def single_user_sents(tweets):
 
 
 if __name__ == "__main__":
-    beginCache();
+    beginCache(None);

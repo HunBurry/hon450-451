@@ -126,7 +126,10 @@ def main():
 
    filename = 'data' + dt_string + '.csv'
 
-   data.to_csv(filename);
+   data.to_csv('../data/' + filename);
+   return filename;
+   
+   '''
 
    highestSent = {};
    lowestSent = {};
@@ -159,6 +162,7 @@ def main():
    'North Carolina', 'North Dakota', 'Nebraska', 'New Hampshire', 'New Jersey', 'New Mexico', 'Nevf3ada', 'New York', 
    'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 
    'Texas', 'Utah', 'Virginia', 'Vermont', 'Washington', 'Wisconsin', 'West Virginia', 'Wyoming'];
+   '''
 
 if __name__ == '__main__':
    main();

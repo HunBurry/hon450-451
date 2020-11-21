@@ -10,6 +10,7 @@ import numpy as np;
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from os import path, remove;
+import glob
 import sys;
 warnings.filterwarnings("ignore")
 import sentimentCacher
@@ -85,7 +86,7 @@ def vectorize(dataframe):
     x_train = bagOfWords.todense();
     y_train = dataframe['party'];
 
-    filename = 'vectorizer_model'
+    filename = '../data/user_models/vectorizer_model'
     pickle.dump(bow_vectorizer, open(filename, 'wb'))
 
     return x_train, y_train, bow_vectorizer;
@@ -224,7 +225,7 @@ def createXGBClassifier(bag, dataset, y_train):
     xgb_model = XGBClassifier(random_state=9,learning_rate=0.3)
     xgb_model.fit(x_train, y_train)
 
-    filename = 'xgboost_model'
+    filename = '../data/user_models/xgboost_model'
     pickle.dump(xgb_model, open(filename, 'wb'))
     return xgb_model;
 
@@ -251,7 +252,7 @@ def createLogisticRegressor(bag, dataset, y_train):
     log_reg = LogisticRegression(random_state=5,solver='lbfgs')
     log_reg.fit(x_train, y_train)
 
-    filename = 'log_reg_model_getDateHere()'
+    filename = '../data/user_models/log_reg_model'
     pickle.dump(log_reg, open(filename, 'wb'))
 
     return log_reg;
@@ -303,7 +304,7 @@ def test_and_predictionsV1(classifier, topics, vectorizer):
 
 ###########################################################################
 
-def test_and_predictionsV2(classifier, topics, vectorizer):
+def test_and_predictionsV2(classifier, topics, vectorizer, testingData):
     '''
     Parameters:
         classifier:
@@ -317,43 +318,21 @@ def test_and_predictionsV2(classifier, topics, vectorizer):
             Vectorization system for word frequency. 
     Get multiple rows at once, parse them all, use that for prediction. 
     '''
-    data = pd.read_csv('../data/sentiments2.csv')
-    #data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
+    data = pd.read_csv(filename)
     data = data.dropna();
-    #data.columns = ['tweet', 'party'] 
-    #data = tokenize(data);
     correct = 0;
     incorrect = 0;
-    '''
-
-    for index, row in data.iterrows():
-        bagOfWords = vectorizer.transform([row['tweet']]);
-        bagOfWords = bagOfWords.todense();
-        sentiments = data.drop(['tweet', 'party'], axis=1).to_numpy();
-        totalInformation = np.append(bagOfWords, sentiments, axis=1);
-        results = classifier.predict(totalInformation);
-        if results == data['party']:
-            correct = correct + 1;
-        else:
-            incorrect = incorrect + 1;
-    '''
-        
     
     data = data.head(data.shape[0]);
-    bagOfWords = vectorizer.transform(data['tweet']); #if tokenize, change to parsed_tweet
+    bagOfWords = vectorizer.transform(data['tweet']);
     bagOfWords = bagOfWords.todense();
     sentiments = data.drop(['tweet', 'party'], axis=1).to_numpy();
-    #print(bagOfWords);
-    #print(sentiments)
     totalInformation = np.append(bagOfWords, sentiments, axis=1);
     results = classifier.predict(totalInformation);
-    #print(len(results))
-    #print(data.shape[0])
     counter = 0;
     corrects = {};
     incorrects = {};
     for index, row in data.iterrows():
-        #print(index)
         if results[counter] == row['party']:
             correct = correct + 1;
             if row['party'] in corrects.keys():
@@ -372,22 +351,24 @@ def test_and_predictionsV2(classifier, topics, vectorizer):
 
 ###########################################################################
 
-def main():
+def main(filename, testingFilename):
+    '''
+    Parameters:
+        filename:
+            Type: String or None
+            File name (not path name) to train models. If None, uses default data. 
+        testingFilename: 
+            Type = String or None
+            File name (not path name) to test models. If None, uses default data. 
+    Main function for hybrid sentiment analysis/machine learning predictions. Used to train and test models. 
+    '''
     topics = sentimentCacher.getTopics();
 
-    data = pd.read_csv('../data/combinedSentiments.csv')
-    #print(data.columns)
-    data = data.drop(['Unnamed: 0', 'Unnamed: 0.1'], axis=1)
+    if not filename:
+        filename = 'completedSentiments.csv'
+    data = pd.read_csv('../data/user_data/' + filename)
+    #data = data.drop(['Unnamed: 0', 'Unnamed: 0.1'], axis=1)
     data = data.dropna();
-    #data.columns = ['tweet', 'party']
-    #data = tokenize(data);
-    
-    #if path.exists("sentiments.csv"):
-    #    sentiments = pd.read_csv('sentiments.csv');
-    #else:
-    #    sentimentCacher.beginCache(100);
-    #    print("Beggining cache process... Please reload when cache has been completed.")
-    #    sys.exit();
         
     bagOfWords, y_train, vectorizer = vectorize(data);
     #tfidf_matrix, y_train, vectorizer = tfidf(data);
@@ -397,19 +378,17 @@ def main():
     logistic_regressor = createLogisticRegressor(bagOfWords, data, y_train);
     #logistic_regressor = createLogisticRegressor(tfidf_matrix, sentiments, y_train);
     
-    #test_and_predictionsV1(xgb_classifier, topics, vectorizer);
-    correct, incorrect, corrects, incorrects = test_and_predictionsV2(xgb_classifier, topics, vectorizer);
+    if not testingFilename:
+        testingFilename = '../data/project_data/testingData.csv'
+    else:
+        testingFilename = '../data/user_data/' + testingFilename;
+
+    correct, incorrect, corrects, incorrects = test_and_predictionsV2(xgb_classifier, topics, vectorizer, testingFilename);
     print("Out XGBoost got " + str(correct) + " out of " + str((correct + incorrect)) + " right. This equates to a " + str(correct/(correct+incorrect) * 100) + " accuracy level.")
     print("The regressor got a " + str(corrects['R']/(corrects['R']+incorrects['R']) * 100) + " percent accuracy level for Republicans, and a " + str(corrects['D']/(corrects['D']+incorrects['D']+incorrects[' D']) * 100) + " percent accuracy level for Democrats.")
-    #print(incorrects)
-    correct, incorrect, corrects, incorrects = test_and_predictionsV2(logistic_regressor, topics, vectorizer);
+    correct, incorrect, corrects, incorrects = test_and_predictionsV2(logistic_regressor, topics, vectorizer, testingFilename);
     print("Our LogisticRegressor got " + str(correct) + " out of " + str((correct + incorrect)) + " right. This equates to a " + str(correct/(correct+incorrect) * 100) + " accuracy level.")
     print("The regressor got a " + str(corrects['R']/(corrects['R']+incorrects['R']) * 100) + " percent accuracy level for Republicans, and a " + str(corrects['D']/(corrects['D']+incorrects['D']+incorrects[' D']) * 100) + " percent accuracy level for Democrats.")
-    #print(str(correct/(correct+incorrect)))
-    #print(corrects);
-    #print(incorrects)
-    #res = test_and_predictionsV2(xgb_classifier, topics, vectorizer);
-    #print(res)
 
 if __name__ == "__main__":
-    main();
+    main(None, None);
