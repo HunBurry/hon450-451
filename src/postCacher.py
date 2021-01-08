@@ -18,23 +18,6 @@ def convert(fileName):
         print(data.head(5));
         newFileName = '../data/completedProcessing' + date + ".csv";
         data.to_csv(newFileName)
-    '''
-    if os.path.exists(fileName):
-        date = fileName[4:-1];
-        sentimentData = "sentiments" + date;
-        data = pd.read_csv('../data/' + fileName);
-        data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
-        data = data.dropna();
-        sentiments = pd.read_csv('../data/' + sentimentData);
-        print(data.head(5));
-        print(sentiments.head(5));
-        if os.path.exists(toDelete):
-            deletionList = np.genfromtxt(toDelete, delimiter=', ').tolist();
-            sentiments.drop(deletionList);
-            data.drop([i + 1 for i in deletionList]);
-        newFileName = '../data/completedProcessing' + date + '.csv';
-        pd.to_csv(newFileName)
-    '''
 
 def combine():
     filesToConcat = [];
