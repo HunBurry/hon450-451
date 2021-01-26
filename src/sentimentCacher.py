@@ -8,6 +8,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 import warnings
 import sys;
 import glob
+import os
 import numpy as np;
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -50,7 +51,10 @@ def getTopics():
 
 def beginCache(filename):
     '''
-    
+    Parameters:
+        filename:
+            Type: String
+            Filename
     When given a number of lines to run on, runs ABSA on said number of needed rows. For a more in-depth
     description of ABSA functionality within the project, see xgboost_SA_attempt2.aspectifyv2. 
     '''
@@ -59,8 +63,10 @@ def beginCache(filename):
     aspectsArray = []
 
     if not filename:
-        filename = glob.glob('../data/user_data/*.csv')[0];
-    data = pd.read_csv('../data/user_data/' + filename)
+        filename = glob.glob('./data/user_data/*.csv')[0];
+    else:
+        filename = './data/user_data/' + filename
+    data = pd.read_csv(filename)
 
     data = data.drop(data.columns[[0, 1, 3, 4, 6]], axis=1)
     data = data.dropna();
@@ -96,12 +102,16 @@ def beginCache(filename):
                         data.at[index, term] = 0
             else:
                 locs.append(index) 
-        data.to_csv('../data/user_data/completedSentiments.csv', index=None, mode='w')
+        data.to_csv('./data/user_data/completedSentiments.csv', index=None, mode='w')
         #np.savetxt('needToRemove.txt', np.array(locs), delimiter=', ');
 
 def single_row_sents(tweet):
     '''
-
+    Parameters:
+        tweet:
+            Type: String
+            Tweet text.
+    Preforms ABSA on a single tweet.
     '''
     topics = getTopics();
     aspectsArray = [];
@@ -131,6 +141,13 @@ def single_row_sents(tweet):
     return pd.DataFrame([resultsDict])
 
 def single_user_sents(tweets):
+    '''
+    Parameters:
+        tweets:
+            Type: 1 Column<String> Dataframe
+            List of tweets.
+    Preforms ABSA on tweets in a dataframe, for use within the interface. 
+    '''
     print("Analyzing....")
     print(tweets)
     topics = getTopics();

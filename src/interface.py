@@ -21,17 +21,17 @@ def single_tweet_analysis(tweet):
     Takes a tweet and predicts the results based on saved models. 
     '''
     parent_dir = os.path.dirname(os.getcwd()).replace("\\", '/')
+    loc = "premade_models"
+    if len(os.listdir('./data/user_models')) == 3:
+        input1 = input("Would you like to run 1) on your custom models or 2) on the project's models? (1/2) ");
+        if input1 == '1':
+            loc = "user_models"
 
     with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
         
-        if len(os.listdir(parent_dir + '/data/user_models')) == 3:
-            loaded_vectorizer_model = pickle.load(open(parent_dir + '/data/user_models/vectorizer_model', 'rb'))
-            loaded_xgb_model = pickle.load(open(parent_dir + '/data/user_models/xgboost_model', 'rb'))
-            loaded_log_reg_model = pickle.load(open(parent_dir + '/data/user_models/log_reg_model', 'rb'))
-        else:
-            loaded_vectorizer_model = pickle.load(open(parent_dir + '/data/premade_models/vectorizer_model', 'rb'))
-            loaded_xgb_model = pickle.load(open(parent_dir + '/data/premade_models/xgboost_model', 'rb'))
-            loaded_log_reg_model = pickle.load(open(parent_dir + '/data/premade_models/log_reg_model', 'rb'))
+        loaded_vectorizer_model = pickle.load(open('./data/' + loc + '/vectorizer_model', 'rb'))
+        loaded_xgb_model = pickle.load(open('./data/' + loc + '/xgboost_model', 'rb'))
+        loaded_log_reg_model = pickle.load(open('./data/' + loc + '/log_reg_model', 'rb'))
 
         data = pd.DataFrame([{'tweet': tweet}]);
         bagOfWords = loaded_vectorizer_model.transform(data['tweet'])
@@ -54,16 +54,17 @@ def single_user_analysis(username):
     '''
     tweets = twitterAPI.single_user_population(username);
 
-    parent_dir = os.path.dirname(os.getcwd()).replace("\\", '/')
+    loc = "premade_models"
+    if len(os.listdir('./data/user_models')) == 3:
+        input1 = input("Would you like to run 1) on your custom models or 2) on the project's models? (1/2) ");
+        if input1 == '1':
+            loc = "user_models"
 
-    if len(os.listdir(parent_dir + '/data/user_models')) == 3:
-        loaded_vectorizer_model = pickle.load(open(parent_dir + '/data/user_models/vectorizer_model', 'rb'))
-        loaded_xgb_model = pickle.load(open(parent_dir + '/data/user_models/xgboost_model', 'rb'))
-        loaded_log_reg_model = pickle.load(open(parent_dir + '/data/user_models/log_reg_model', 'rb'))
-    else:
-        loaded_vectorizer_model = pickle.load(open(parent_dir + '/data/premade_models/vectorizer_model', 'rb'))
-        loaded_xgb_model = pickle.load(open(parent_dir + '/data/premade_models/xgboost_model', 'rb'))
-        loaded_log_reg_model = pickle.load(open(parent_dir + '/data/premade_models/log_reg_model', 'rb'))
+    with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+        
+        loaded_vectorizer_model = pickle.load(open('./data/' + loc + '/vectorizer_model', 'rb'))
+        loaded_xgb_model = pickle.load(open('./data/' + loc + '/xgboost_model', 'rb'))
+        loaded_log_reg_model = pickle.load(open('./data/' + loc + '/log_reg_model', 'rb'))
 
     print('Models successfully loaded.')
 
@@ -89,9 +90,10 @@ def main():
             input2 = input("Are you sure you would like to do this? Pipeline processes may take upwards of 12 hours (Y/N). ")
             if input2.lower() == 'y':
                 print("Starting pipeline...")
-                filename = twitterAPI.main();
+                #filename = twitterAPI.main();
+                filename = "data26_01_2021_12-42.csv"
                 print('Starting sentiment analysis...')
-                sentimentCacher.beginCache(filename);
+                #sentimentCacher.beginCache(filename);
                 print("Sentiment analysis completed...");
                 input6 = input("Would you like to 1) use the project's default testing data, or 2) use your own (1/2)? ")
                 if (input6 == '1'):

@@ -1,0 +1,35 @@
+   
+   '''
+
+   highestSent = {};
+   lowestSent = {};
+
+   for index, row in data.iterrows():
+      if row['party'] in parties.keys():
+         pass;
+      else:
+         parties[row['party']] = {};
+      if row['state'] in states.keys():
+         pass;
+      else:
+         states[row['state']] = {};
+   
+      for item in row['nouns']:
+         if item not in parties[row['party']].keys():
+            parties[row['party']][item] = 1;
+         else:
+            parties[row['party']][item] = parties[row['party']][item] + 1;
+         if item not in states[row['state']]:
+            states[row['state']][item] = 1;
+         else:
+            states[row['state']][item] = states[row['state']][item] + 1;
+
+         #record highest and compare back 
+      
+   listOfStates = ['Alaska', 'Alabama', 'Arkansas', 'Arizona', 'California', 'Colorado', 'Connecticut', 
+   'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Iowa', 'Idaho', 'Illinois', 'Indiana', 'Kansas', 'Kentucky', 
+   'Louisiana', 'Massachusetts', 'Maryland', 'Maine', 'Michigan', 'Minnesota', 'Missouri', 'Mississippi', 'Montana', 
+   'North Carolina', 'North Dakota', 'Nebraska', 'New Hampshire', 'New Jersey', 'New Mexico', 'Nevf3ada', 'New York', 
+   'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 
+   'Texas', 'Utah', 'Virginia', 'Vermont', 'Washington', 'Wisconsin', 'West Virginia', 'Wyoming'];
+   '''
