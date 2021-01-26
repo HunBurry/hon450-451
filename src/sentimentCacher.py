@@ -131,6 +131,8 @@ def single_row_sents(tweet):
     return pd.DataFrame([resultsDict])
 
 def single_user_sents(tweets):
+    print("Analyzing....")
+    print(tweets)
     topics = getTopics();
     aspectsArray = [];
     for key in topics.keys():

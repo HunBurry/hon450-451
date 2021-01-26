@@ -70,20 +70,20 @@ def single_user_analysis(username):
     data = pd.DataFrame(tweets, columns=['tweet']);
     bagOfWords = loaded_vectorizer_model.transform(data['tweet'])
     bagOfWords = bagOfWords.todense();
-    sentiments = sentimentCacher.single_row_sents(tweets).to_numpy();
+    sentiments = sentimentCacher.single_user_sents(data['tweet']).to_numpy();
     totalInformation = np.append(bagOfWords, sentiments, axis=1);
     xgb_prediction = loaded_xgb_model.predict(totalInformation);
-    log_reg_predicition = loaded_log_reg_model.predict(totalInformation);
+    #log_reg_predicition = loaded_log_reg_model.predict(totalInformation);
     
     for rowNum in range(5):
-        print("For tweet #" + str(rowNum) + ", the XGBoost predicited " + xgb_prediction[rowNum] + " and the Logistic Regressor predicted " + log_reg_predicition[rowNum] + '.')
+        print("For tweet #" + str(rowNum + 1) + ", the XGBoost predicited " + xgb_prediction[rowNum] + "."); #and the Logistic Regressor predicted " + log_reg_predicition[rowNum] + '.')
 
 def main():
     '''
     Interface for project. Follow prompts to complete process. 
     '''
     print("Starting program...");
-    while (True):
+    while True:
         input1 = input("Would you like to 1) Start the pipeline, or 2) run tweet anlysis on training data (1/2)? ")
         if input1 == '1':
             input2 = input("Are you sure you would like to do this? Pipeline processes may take upwards of 12 hours (Y/N). ")
