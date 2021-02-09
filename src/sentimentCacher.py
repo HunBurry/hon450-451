@@ -103,7 +103,6 @@ def beginCache(filename):
             else:
                 locs.append(index) 
         data.to_csv('./data/user_data/completedSentiments.csv', index=None, mode='w')
-        #np.savetxt('needToRemove.txt', np.array(locs), delimiter=', ');
 
 def single_row_sents(tweet):
     '''

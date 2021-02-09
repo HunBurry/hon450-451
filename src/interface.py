@@ -90,10 +90,10 @@ def main():
             input2 = input("Are you sure you would like to do this? Pipeline processes may take upwards of 12 hours (Y/N). ")
             if input2.lower() == 'y':
                 print("Starting pipeline...")
-                #filename = twitterAPI.main();
+                filename = twitterAPI.main();
                 filename = "data26_01_2021_12-42.csv"
                 print('Starting sentiment analysis...')
-                #sentimentCacher.beginCache(filename);
+                sentimentCacher.beginCache(filename);
                 print("Sentiment analysis completed...");
                 input6 = input("Would you like to 1) use the project's default testing data, or 2) use your own (1/2)? ")
                 if (input6 == '1'):
