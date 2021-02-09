@@ -12,14 +12,16 @@ def createTestTrain(listOfFiles):
     for fileName in listOfFiles:
         df = pd.read_csv(fileName, skip_blank_lines=True)
         df.columns = ['index', 'twitterID', 'tweetText', 'polarity', 'nounPhrases', 'party', 'state'];
-        df.dropna(axis=0);
+        df = df.dropna(axis=0); 
         #print(df.head(50))
         for index, row in df.iterrows():
             holdData.append(tuple([row['tweetText'], row['party']]));
 
         df['train'] = df[['tweetText', 'party']].apply(tuple, axis=1)
 
-        aTrain = df['train'].values.tolist()
+        aTrain = df['train']
+        aTrain = aTrain.dropna()
+        aTrain = aTrain.values.tolist()
 
         return aTrain;
 
@@ -36,13 +38,11 @@ def chunk(data, mode, classificationS):
         while curPos <= length:
             if curPos == 0:
                 d = data[0:50]
-                for i in d:
-                    print(i)
-                classifer = NaiveBayesClassifier(data);
+                classifier = NaiveBayesClassifier(d);
                 curPos = 50;
             else:
                 if curPos + 50 >= length:
-                    classifer.update(data[curPos:length]);
+                    classifier.update(data[curPos:length]);
                 else:
                     classifier.update(data[curPos:curPos + 50])
                 curPos = curPos + 50;
