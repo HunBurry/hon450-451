@@ -1,11 +1,12 @@
 import pickle
 import xgboost
 from sklearn.linear_model import LogisticRegression
-import hybrid_SA
+import hybrid_SA_classifier
 import twitterAPI
 import tweepy
 import asyncio
 import sentimentCacher
+import naive_bayes_classifier
 import pandas as pd
 import numpy as np
 import os
@@ -22,7 +23,7 @@ def single_tweet_analysis(tweet):
     '''
     parent_dir = os.path.dirname(os.getcwd()).replace("\\", '/')
     loc = "premade_models"
-    if len(os.listdir('./data/user_models')) == 3:
+    if len(os.listdir('./data/user_models')) == 4:
         input1 = input("Would you like to run 1) on your custom models or 2) on the project's models? (1/2) ");
         if input1 == '1':
             loc = "user_models"
@@ -32,6 +33,7 @@ def single_tweet_analysis(tweet):
         loaded_vectorizer_model = pickle.load(open('./data/' + loc + '/vectorizer_model', 'rb'))
         loaded_xgb_model = pickle.load(open('./data/' + loc + '/xgboost_model', 'rb'))
         loaded_log_reg_model = pickle.load(open('./data/' + loc + '/log_reg_model', 'rb'))
+        loaded_naive_bayes_model = pickle.load(open('./data/' + loc + '/naive_bayes_model', 'rb'))
 
         data = pd.DataFrame([{'tweet': tweet}]);
         bagOfWords = loaded_vectorizer_model.transform(data['tweet'])
@@ -40,9 +42,14 @@ def single_tweet_analysis(tweet):
         totalInformation = np.append(bagOfWords, sentiments, axis=1);
         xgb_prediction = loaded_xgb_model.predict(totalInformation);
         log_reg_prediction = loaded_log_reg_model.predict(totalInformation);
+        naive_bayes_prediction = loaded_naive_bayes_model.classify(tweet)
 
-    print("The XGBoost model predicts that the tweet is " + xgb_prediction + ".")
-    print("The Logistic Regression model predicts that the tweet is " + log_reg_prediction + ".")
+    for rowNum in range(5):
+        print('\n')
+
+    print("The XGBoost model predicts that the tweet is " + xgb_prediction[0] + ".")
+    print("The Logistic Regression model predicts that the tweet is " + log_reg_prediction[0] + ".")
+    print("The Naive Bayes model predicts that the tweet is " + naive_bayes_prediction + ".")
 
 def single_user_analysis(username):
     '''
@@ -55,7 +62,7 @@ def single_user_analysis(username):
     tweets = twitterAPI.single_user_population(username);
 
     loc = "premade_models"
-    if len(os.listdir('./data/user_models')) == 3:
+    if len(os.listdir('./data/user_models')) == 4:
         input1 = input("Would you like to run 1) on your custom models or 2) on the project's models? (1/2) ");
         if input1 == '1':
             loc = "user_models"
@@ -65,6 +72,7 @@ def single_user_analysis(username):
         loaded_vectorizer_model = pickle.load(open('./data/' + loc + '/vectorizer_model', 'rb'))
         loaded_xgb_model = pickle.load(open('./data/' + loc + '/xgboost_model', 'rb'))
         loaded_log_reg_model = pickle.load(open('./data/' + loc + '/log_reg_model', 'rb'))
+        loaded_naive_bayes_model = pickle.load(open('./data/' + loc + '/naive_bayes_model', 'rb'))
 
     print('Models successfully loaded.')
 
@@ -78,6 +86,8 @@ def single_user_analysis(username):
     
     for rowNum in range(5):
         print("For tweet #" + str(rowNum + 1) + ", the XGBoost predicited " + xgb_prediction[rowNum] + "."); #and the Logistic Regressor predicted " + log_reg_predicition[rowNum] + '.')
+        naive_bayes_prediction = loaded_naive_bayes_model.classify(tweets.iloc[rowNum, 0])
+        print("For tweet #" + str(rowNum + 1) + ", the Naive Bayes Classifier predicited " + naive_bayes_prediction + ".\n")
 
 def main():
     '''
@@ -91,18 +101,29 @@ def main():
             if input2.lower() == 'y':
                 print("Starting pipeline...")
                 filename = twitterAPI.main();
-                filename = "data26_01_2021_12-42.csv"
+
                 print('Starting sentiment analysis...')
                 sentimentCacher.beginCache(filename);
                 print("Sentiment analysis completed...");
+
                 input6 = input("Would you like to 1) use the project's default testing data, or 2) use your own (1/2)? ")
                 if (input6 == '1'):
                     print("Starting training/testing process.")
-                    hybrid_SA.main(filename, None);
+                    hybrid_SA_classifier.main(filename, None);
                 else:
                     input7 = input("What is the filename of the testing data? Please put just the filename, path is not needed. ")
                     print("Starting training/testing process.")
-                    hybrid_SA.main(filename, input7);
+                    hybrid_SA_classifier.main(filename, input7);
+
+                print("Hybrid model trainings completed... Naive Bayes training starting...")
+                finalInput = input("Would you like to 1) use the project's default testing data, or 2) use your own (1/2)? ")
+                if (finalInput == '1'):
+                    print("Starting training/testing process.")
+                    naive_bayes_classifier.main([filename], None);
+                else:
+                    finalInput2 = input("What is the filename of the testing data? Please put just the filename, path is not needed. ")
+                    print("Starting training/testing process.")
+                    naive_bayes_classifier.main([filename], ["./data/user_data/" + finalInput2]);
                 print("Pipeline completed, and models have been trained and stored in the user_models folder.")
         elif input1 == '2':
             input3 = input("Would you like to 1) run analysis on a single tweet/text, or 2) pull from a live feed (1/2)? ")

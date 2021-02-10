@@ -115,9 +115,6 @@ def main():
 
    print("Data populated.")
 
-   #if 'realDonaldTrump' not in users:
-   #   users.append('realDonaldTrump'); # List of all users to pull training data for.
-
    data = createFrame(api, tweetsToPull, users);
    print(data);
    
