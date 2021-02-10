@@ -88,19 +88,26 @@ def main(trainingFiles, testingFiles):
     '''
     if trainingFiles is None:
         classifier = pickle.load(open('./data/premade_models/naive_bayes_model', 'rb'))
+        print("Classifier successfully loaded...")
     else:
+        print("Creating training data and model...")
         trainingData = createTestTrain(trainingFiles);
         classifier = chunk(trainingData, 'train', None);
+        print("Classifier created...")
 
     if testingFiles is None:
         testingFiles = ["./data/project_data/naive_testing_data.csv"];
+    print("Creating testing data...")
     testingData = createTestTrain(testingFiles);
 
+    print("Data created, testing accuracy now...")
     accuracies = chunk(testingData, 'test', classifier);
+    print("Process completed.")
     print("Average Accuracy: " + str(statistics.mean(accuracies)));
 
-    filename = './data/user_models/naive_bayes_model'
-    pickle.dump(classifier, open(filename, 'wb'))
+    if trainingFiles is None:
+        filename = './data/user_models/naive_bayes_model'
+        pickle.dump(classifier, open(filename, 'wb'))
 
     '''
     Examples Below. Undocument this to show tests.
