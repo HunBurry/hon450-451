@@ -338,7 +338,7 @@ def main(filename, testingFilename):
 
     correct, incorrect, corrects, incorrects = test_and_predictionsV2(xgb_classifier, topics, vectorizer, testingData);
     print("Out XGBoost got " + str(correct) + " out of " + str((correct + incorrect)) + " right. This equates to a " + str(correct/(correct+incorrect) * 100) + " accuracy level.")
-    print("The regressor got a " + str(corrects['R']/(corrects['R']+incorrects['R']) * 100) + " percent accuracy level for Republicans, and a " + str(corrects['D']/(corrects['D']+incorrects['D']+incorrects[' D']) * 100) + " percent accuracy level for Democrats.")
+    print("The regressor got a " + str(corrects['R']/(corrects['R']+incorrects['R']) * 100) + " percent accuracy level for Republicans, and a " + str(corrects['D']/(corrects['D']+incorrects['D']+incorrects[' D']) * 100) + " percent accuracy level for Democrats.\n")
     
     correct, incorrect, corrects, incorrects = test_and_predictionsV2(logistic_regressor, topics, vectorizer, testingData);
     print("Our LogisticRegressor got " + str(correct) + " out of " + str((correct + incorrect)) + " right. This equates to a " + str(correct/(correct+incorrect) * 100) + " accuracy level.")
