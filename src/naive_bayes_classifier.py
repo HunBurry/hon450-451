@@ -87,7 +87,7 @@ def main(trainingFiles, testingFiles):
     examples that can be ran if uncommented. 
     '''
     if trainingFiles is None:
-        classifier = pickle.load(open('./data/' + loc + '/naive_bayes_model', 'rb'))
+        classifier = pickle.load(open('./data/premade_models/naive_bayes_model', 'rb'))
     else:
         trainingData = createTestTrain(trainingFiles);
         classifier = chunk(trainingData, 'train', None);
