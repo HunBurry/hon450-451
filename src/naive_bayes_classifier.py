@@ -86,14 +86,17 @@ def main(trainingFiles, testingFiles):
     a NBC from the TextBlob library. Prints out accuracy, and has some
     examples that can be ran if uncommented. 
     '''
-    trainingData = createTestTrain(trainingFiles);
+    if trainingFiles is None:
+        classifier = pickle.load(open('./data/' + loc + '/naive_bayes_model', 'rb'))
+    else:
+        trainingData = createTestTrain(trainingFiles);
+        classifier = chunk(trainingData, 'train', None);
+
     if testingFiles is None:
         testingFiles = ["./data/project_data/naive_testing_data.csv"];
     testingData = createTestTrain(testingFiles);
 
-    classifier = chunk(trainingData, 'train', None);
     accuracies = chunk(testingData, 'test', classifier);
-
     print("Average Accuracy: " + str(statistics.mean(accuracies)));
 
     filename = './data/user_models/naive_bayes_model'
@@ -110,4 +113,4 @@ def main(trainingFiles, testingFiles):
     '''
 
 if __name__ == "__main__":
-    main(["./data/project_data/naive_training_data.csv"], None);
+    main(None, None);
