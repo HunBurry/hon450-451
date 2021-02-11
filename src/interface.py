@@ -44,9 +44,6 @@ def single_tweet_analysis(tweet):
         log_reg_prediction = loaded_log_reg_model.predict(totalInformation);
         naive_bayes_prediction = loaded_naive_bayes_model.classify(tweet)
 
-    for rowNum in range(5):
-        print('\n')
-
     print("The XGBoost model predicts that the tweet is " + xgb_prediction[0] + ".")
     print("The Logistic Regression model predicts that the tweet is " + log_reg_prediction[0] + ".")
     print("The Naive Bayes model predicts that the tweet is " + naive_bayes_prediction + ".")

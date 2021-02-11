@@ -78,8 +78,7 @@ def beginCache(filename):
             data[item] = np.nan;
 
     nlp = absa.load();
-    for i in range(10):
-        print('')
+    os.system('cls')
 
     counter = 0;
     locs = []
@@ -119,8 +118,7 @@ def single_row_sents(tweet):
             aspectsArray.append(item)
     
     nlp = absa.load();
-    for i in range(10):
-        print('')
+    os.system('cls')
 
     resultsDict = {};
 
@@ -156,8 +154,7 @@ def single_user_sents(tweets):
             aspectsArray.append(item)
     
     nlp = absa.load();
-    for i in range(10):
-        print('')
+    os.system('cls')
 
     myResults = [];
 
