@@ -97,8 +97,8 @@ def main():
       textFile = '../congress.txt'
    else:
       textFile = sys.argv[1];
-   auth = tweepy.OAuthHandler("ZqarwsmGvqGU8IR7pmRUeG23j", "RfYaQf6l4hHIkynjvV5Yi17TzYjy2xBv9A0gwEjbFKfgxSrO3O");
-   auth.set_access_token("4819588312-rXEoklKXE27hSQLnhERd8UBpJLp7FmVVk2CJles", "2imqeKDTNq6T1GeGCJUtL1yvpr6EJlOAYykAJxjhAIPvZ");
+   auth = tweepy.OAuthHandler("###############################", "###############################"); #Replace With Real Codes 
+   auth.set_access_token("###############################-###############################", "###############################"); #Replace With Real Codes
 
    api = tweepy.API(auth); # Connects to Twitter application using codes. 
    print("Authorizaion successful.")
